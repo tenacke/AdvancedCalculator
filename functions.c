@@ -4,6 +4,11 @@
 #include <ctype.h>
 #include "functions.h"
 
+// returns 1 if the string is an operator
+int isOperator(char* str) {
+    return (*str) == '+' || (*str) == '-' || (*str) == '*' || (*str) == '&' || (*str) == '|';
+}
+
 // strip the left side of the string
 char* leftStripper(char* str) {
     while (isspace(*str)) {
@@ -58,3 +63,8 @@ int getSize(Stack* stack){
     return (*stack).size;
 }
 
+int getPrecedence(char* str){
+    switch (*str){
+        // TODO make precedence logic
+    }
+}

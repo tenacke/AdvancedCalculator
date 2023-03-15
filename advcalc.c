@@ -68,11 +68,83 @@ int main(){
 }
 
 char* infixToPostfix(char* str){
-    return str;
+    Stack* operations = initializeStack();
+    // memory for digits and letters
+    Stack* memory = initializeStack(); 
+    // result string in postfix form
+    char* result = (char*) malloc(sizeof(char)*256);
+    for (; (*str) != '\0'; str++) {
+        if (isdigit(*str)) {
+            // add the digit to the memory
+            push(memory, *str);
+            char next = *(str+1);
+            if (isspace(next) || next == ')' || isoperator(next)){
+                // add the memory to the result and clear the memory
+                while (getSize(memory) > 0) {
+                    *result++ = pop(memory);
+                }
+                *result++ = ' ';
+            } else if (!isdigit(next)){ 
+                // if the next character is not digit or space or ')' or operator or digit that means it is error
+                return NULL;
+            }
+        } else if (isalpha(*str)) {
+            push(memory, *str);
+            char next = *(str+1);
+            if (isspace(next) || next == '(' || next == ')' || isoperator(next)){
+                // add the memory to the result and clear the memory
+// TODO handle functions here
+                char* temp = (char*) malloc(sizeof(char)*getSize(memory)); 
+                while (getSize(memory) > 0) {
+                    *temp++ = pop(memory);
+                }
+                *temp++ = ' ';
+// TODO temp is pointing end of the letter fix this
+            } else if (!isalpha(next)){ 
+                // if the next character is not letter or space or parenthesis or operator or digit that means it is error
+                return NULL;
+            }
+        } else if (isspace(*str)) {
+            // add the memory to the result
+            // clear the memory
+        } else if (*str == '(') {
+            // push the '(' to the stack
+            push(operations, *str);
+        } else if (*str == ')') {
+            // pop the stack until '('
+            // add the popped operators to the result
+            char operation = pop(operations);
+            while (operation != '(') {
+                if (getSize(operations) == 0)
+                    return NULL; // if the stack is empty that means it it error
+                *result++ = operation;
+                *result++ = ' ';
+                operation = pop(operations);
+            }
+
+        } else if (isoperator(*str)) {
+            // pop the stack until top of the stack has lower precedence than the operator
+            
+            if (getSize(operations) == 0){
+                push(operations, *str);
+            }
+            // push the operator to the stack
+            
+        } else if (*str == ','){
+// TODO look up functions
+        } else {
+            // if the character is not valid that means it is error
+            return NULL;
+        }
+    }
+    return result;
 }
 
 int* evaluateExpression(char* str){
-  return 0;
+    if (str) {
+        
+    }
+    return NULL;
 }
 
 int* getVariable(char* str){
@@ -81,6 +153,4 @@ int* getVariable(char* str){
 
 void setVariable(char* str, int value){
 }
-
-
 
