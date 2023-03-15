@@ -1,32 +1,60 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include "functions.h"
 
-
+// strip the left side of the string
 char* leftStripper(char* str) {
-    int begin = 0;
-    while (*(str+begin) == ' ') {
-        begin++;
-    }
-    return str+begin;
-}
-
-char* rightStripper(char* str) {
-    char* end = strchr(str, ' ');
-    *end = '\0';
-    int i=1;
-    while (*(end+i) != '\0') {
-        if (*(end+i)!= ' ') {
-            return NULL;
-            break;
-        }
-        i++;
+    while (isspace(*str)) {
+        str++;
     }
     return str;
-
 }
 
-// char* strip(char* str) {
-//     str = leftStrip(str);
-//     str = rightStrip(str);
-// }
+// strip the right side of the string
+char* rightStripper(char* str) {
+    char* end = strrchr(str, ' ');
+    while (end && *(end+1) == '\0') {
+        *end = '\0';
+        end = strrchr(str, ' ');
+    }
+    return str;
+}
+
+// strip the string
+char* strip(char* str) {
+    return leftStripper(rightStripper(str));
+}
+
+// split the string into two parts by the first character
+char* split(char* str, char find) {
+    char* end = strchr(str, find);
+    if (end){
+        *end = '\0';
+        return end+1;
+    } else{
+        return NULL;
+    }
+}
+
+// initialize the stack
+Stack* initializeStack(){
+    return (Stack*) malloc(sizeof(Stack));
+}
+
+// push the char to the stack
+void push(Stack* stack, char str){
+    (*stack).elems[(*stack).size++] = str;
+}
+
+// pop the char from the stack
+char pop(Stack* stack){
+    return (*stack).elems[--(*stack).size];
+}
+
+// get the size of the stack
+int getSize(Stack* stack){
+    return (*stack).size;
+}
+
