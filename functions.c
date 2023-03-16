@@ -83,6 +83,11 @@ char pop(Stack* stack){
     return (*stack).elems[--(*stack).size];
 }
 
+// peek the char at the top of the stack
+char peek(Stack* stack){
+    return (*stack).elems[(*stack).size-1];
+}
+
 // get the size of the stack
 int getSize(Stack* stack){
     return (*stack).size;

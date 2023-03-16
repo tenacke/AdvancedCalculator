@@ -18,4 +18,4 @@ int getSize(Stack* stack);
 int hash(char* str);
 char* getVariable(Variable* table, char* key);
 void setVariable(Variable* table, char* key, char* value);
-
+char peek(Stack* stack);
