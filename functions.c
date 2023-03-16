@@ -67,4 +67,5 @@ int getPrecedence(char* str){
     switch (*str){
         // TODO make precedence logic
     }
+    return 0;
 }

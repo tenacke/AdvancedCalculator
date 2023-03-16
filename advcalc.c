@@ -154,6 +154,9 @@ char* infixToPostfix(char* str){
             if (getSize(operations) == 0){
                 push(operations, *str);
             }
+            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION)
+                return NULL;
+            lastToken = OPERATOR;
             // push the operator to the stack
             
         } else if (*str == ','){
@@ -167,7 +170,10 @@ char* infixToPostfix(char* str){
     // empty the operations stack
     while (getSize(operations))
     {
-        *result++ = pop(operations);
+        char operation = pop(operations);
+        if (operation == '(' || operation == ')')
+            return NULL;
+        *result++ = operation;
         *result++ = ' ';
     }
     return copy;
