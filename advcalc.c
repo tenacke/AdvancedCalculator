@@ -81,6 +81,8 @@ char* infixToPostfix(char* str){
     Stack* operations = initializeStack();
     // memory for digits and letters
     Stack* memory = initializeStack(); 
+    Stack* functions = initializeStack(); 
+
     // result string in postfix form
     char* result = (char*) malloc(sizeof(char)*256);
     char* copy = result;
@@ -106,11 +108,12 @@ char* infixToPostfix(char* str){
             char next = *(str+1);
             if (isspace(next) || next == '(' || next == ')' || isOperator(next)){
                 // add the memory to the result and clear the memory
-// TODO handle functions here
                 char* temp = (char*) malloc(sizeof(char)*getSize(memory)); 
+                char* copy = temp;
                 while (getSize(memory) > 0) {
                     *temp++ = pop(memory);
                 }
+                printf("%s", copy);
                 *temp++ = ' ';
 // TODO temp is pointing end of the letter fix this
             } else if (!isalpha(next)){ 
@@ -150,17 +153,32 @@ char* infixToPostfix(char* str){
             lastToken = RIGHT_PARENTHESIS;
         } else if (isOperator(*str)) {
             // TODO pop the stack until top of the stack has lower precedence than the operator
-            push(operations, *str);
-            if (getSize(operations) == 0){
-                push(operations, *str);
+
+            int currPrec = getPrecedence(str);
+            if (getSize(operations)>0) {
+            char c = peek(operations);
+
+            while (getSize(operations)>0 && currPrec<=getPrecedence(&c)) {
+                *result++ = pop(operations);
+                *result++ = ' ';
+                c = peek(operations);
             }
+            }
+            push(operations, *str);
+
             if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION)
                 return NULL;
             lastToken = OPERATOR;
-            // push the operator to the stack
             
         } else if (*str == ','){
 // TODO look up functions
+        if (getSize(functions)==0) {
+            return NULL;
+        }
+        char* op = pop(functions);
+        push(operations, op);
+
+
         } else {
             // if the character is not valid that means it is error
             return NULL;

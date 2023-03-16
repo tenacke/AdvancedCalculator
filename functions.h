@@ -17,3 +17,4 @@ Stack* initializeStack();
 void push(Stack* stack, char str);
 char pop(Stack* stack);
 int getSize(Stack* stack);
+char peek(Stack* stack);
