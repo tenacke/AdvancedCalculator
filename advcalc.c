@@ -37,7 +37,6 @@ int main(){
       
       if (right){ // means that line is assignment
         char* left = strip(str); //left hand side
-        
         //evaluate the expression
         right = strip(right); //right hand side
         right = infixToPostfix(right); //convert to postfix
@@ -74,14 +73,15 @@ char* infixToPostfix(char* str){
     Stack* memory = initializeStack(); 
     // result string in postfix form
     char* result = (char*) malloc(sizeof(char)*256);
+    char* copy = result;
     for (; (*str) != '\0'; str++) {
-        if (isdigit(*str)) {
+        if (isdigit(*str)) { // FINISHED
             // add the digit to the memory
             push(memory, *str);
             char next = *(str+1);
             if (isspace(next) || next == ')' || isOperator(next)){
                 // add the memory to the result and clear the memory
-                printf("%s", *str);
+                // it is reversed but it is a feature not a bug :)
                 while (getSize(memory) > 0) {
                     *result++ = pop(memory);
                 }
@@ -125,8 +125,8 @@ char* infixToPostfix(char* str){
             }
 
         } else if (isOperator(*str)) {
-            // pop the stack until top of the stack has lower precedence than the operator
-            
+            // TODO pop the stack until top of the stack has lower precedence than the operator
+            push(operations, *str);
             if (getSize(operations) == 0){
                 push(operations, *str);
             }
@@ -139,7 +139,14 @@ char* infixToPostfix(char* str){
             return NULL;
         }
     }
-    return result;
+
+    // empty the operations stack
+    while (getSize(operations))
+    {
+        *result++ = pop(operations);
+        *result++ = ' ';
+    }
+    return copy;
 }
 
 int* evaluateExpression(char* str){
