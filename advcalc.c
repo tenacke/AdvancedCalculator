@@ -12,6 +12,9 @@ char* RR = "rr"; // @
 char* LR = "lr"; // #
 char* NOT = "not"; // ~
 
+// variables
+Variable* variables;
+
 enum tokens {
     NUMBER,
     VARIABLE,
@@ -21,13 +24,6 @@ enum tokens {
     RIGHT_PARENTHESIS,
     NONE
 };
-
-// check if the variable is defined and return its value
-// if not return NULL
-int* getVariable(char* str);
-
-// set the variable with the value
-void setVariable(char* str, int value);
 
 // evaluate the expression and return NULL if it is not valid
 int* evaluateExpression(char* str);
@@ -77,6 +73,7 @@ int main(){
 }
 
 char* infixToPostfix(char* str){
+    variables = (Variable*) calloc(256, sizeof(Variable));
     enum tokens lastToken = OPERATOR;
     Stack* operations = initializeStack();
     // memory for digits and letters
@@ -189,11 +186,3 @@ int* evaluateExpression(char* str){
 char getFunction(char* str){
     return '\0';
 }
-
-int* getVariable(char* str){
-    return NULL;
-}
-
-void setVariable(char* str, int value){
-}
-

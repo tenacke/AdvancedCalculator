@@ -4,6 +4,31 @@
 #include <ctype.h>
 #include "functions.h"
 
+// hash function
+int hash(char* str){
+    int hash = 0;
+    for (int i = 0; i < strlen(str); i++){
+        hash += str[i];
+    }
+    return hash % 256;
+}
+
+// check if the variable is defined and return its value
+// if not return NULL
+char* getVariable(Variable* table, char* key){
+    int index = hash(key);
+    if ((table+index)->key != key){
+        return (table+index)->value;
+    }
+}
+
+// set the variable to the table
+void setVariable(Variable* table, char* key, char* value){
+    int index = hash(key);
+    table[index].key = key;
+    table[index].value = value;
+}
+
 // returns 1 if the string is an operator
 int isOperator(char str) {
     return (str) == '+' || (str) == '-' || (str) == '*' || (str) == '&' || (str) == '|';
