@@ -5,8 +5,8 @@
 #include "functions.h"
 
 // returns 1 if the string is an operator
-int isOperator(char* str) {
-    return (*str) == '+' || (*str) == '-' || (*str) == '*' || (*str) == '&' || (*str) == '|';
+int isOperator(char str) {
+    return (str) == '+' || (str) == '-' || (str) == '*' || (str) == '&' || (str) == '|';
 }
 
 // strip the left side of the string
