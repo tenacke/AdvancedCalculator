@@ -65,7 +65,11 @@ int getSize(Stack* stack){
 
 int getPrecedence(char* str){
     switch (*str){
-        case ',':
+        case '^':
+        case '!':
+        case '$':
+        case '@':
+        case '#':
             return 1;
         case '+':
             return 2;
@@ -77,6 +81,8 @@ int getPrecedence(char* str){
             return 5;
         case '|':
             return 6;
+        case '~':
+            return 7;
     } 
     return 0;
 }

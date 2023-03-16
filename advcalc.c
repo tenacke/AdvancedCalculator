@@ -5,12 +5,12 @@
 #include "functions.h"
 
 // operators
-char* XOR = "xor";
-char* RS = "rs";
-char* LS = "ls";
-char* RR = "rr";
-char* LR = "lr";
-char* NOT = "not";
+char* XOR = "xor"; // ^
+char* RS = "rs"; // !
+char* LS = "ls"; // $
+char* RR = "rr"; // @
+char* LR = "lr"; // #
+char* NOT = "not"; // ~
 
 enum tokens {
     NUMBER,
@@ -184,6 +184,10 @@ int* evaluateExpression(char* str){
         
     }
     return NULL;
+}
+
+char getFunction(char* str){
+    return '\0';
 }
 
 int* getVariable(char* str){
