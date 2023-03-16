@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include "functions.h"
 
-// operators
+// functions
 char* XOR = "xor"; // ^
 char* RS = "rs"; // !
 char* LS = "ls"; // $
@@ -34,7 +34,7 @@ char* infixToPostfix(char* str);
 int main(){
   char str[256+1] = "";
   printf("> ");
-  while (fgets(str, sizeof(str), stdin) && str != NULL) {
+  while (fgets(str, sizeof(str), stdin)) {
        // check for comments
        split(str, '%');
       // check '=' for the line is assignment or not
@@ -82,14 +82,14 @@ char* infixToPostfix(char* str){
     Stack* functions = initializeStack(); 
 
     // result string in postfix form
-    char* result = (char*) malloc(sizeof(char)*256);
+    char* result = (char*) malloc(sizeof(char)*512);
     char* copy = result;
     for (; (*str) != '\0'; str++) {
-        if (isdigit(*str)) { // FINISHED
+        if (isdigit(*str)) { 
             // add the digit to the memory
             push(memory, *str);
             char next = *(str+1);
-            if (isspace(next) || next == ')' || isOperator(next)){
+            if (isspace(next) || next == ')' || isOperator(next) || next == ','){
                 // add the memory to the result and clear the memory
                 // it is reversed but it is a feature not a bug :)
                 while (getSize(memory) > 0) {
@@ -99,28 +99,45 @@ char* infixToPostfix(char* str){
                 lastToken = NUMBER;
             } else if (!isdigit(next) || lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS || lastToken == FUNCTION){ 
                 // if the next character is not digit or space or ')' or operator or digit that means it is error
+                printf("line 102");
                 return NULL;
             }
         } else if (isalpha(*str)) {
             push(memory, *str);
             char next = *(str+1);
-            if (isspace(next) || next == '(' || next == ')' || isOperator(next)){
+            if (isspace(next) || next == '(' || next == ')' || isOperator(next) || next == ','){
                 // add the memory to the result and clear the memory
                 char* temp = (char*) malloc(sizeof(char)*getSize(memory)); 
                 char* copy = temp;
                 while (getSize(memory) > 0) {
                     *temp++ = pop(memory);
                 }
-                printf("%s", copy);
                 *temp++ = ' ';
-// TODO temp is pointing end of the letter fix this
-            } else if (!isalpha(next)){ 
+                *temp = '\0';
+                char* func = isFunction(copy);
+                if (func) {
+                    if (*func == '~'){
+                        push(operations, *func);
+                    }else{
+                        push(functions, *func);
+                    }
+                    lastToken = FUNCTION;
+                } else {
+                    char* var = getVariable(variables, copy);
+                    while (*var != '\0') {
+                        *result++ = *var++;
+                    }
+                    *result++ = ' ';
+                    lastToken = VARIABLE;
+                }
+
+            } else if (!isalpha(next) || lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS || lastToken == FUNCTION){ 
                 // if the next character is not letter or space or parenthesis or operator or digit that means it is error
+                printf("line 136");
                 return NULL;
             }
         } else if (isspace(*str)) {
-            // add the memory to the result
-            // clear the memory
+            // ignore the spaces
         } else if (*str == '(') {
             // push the '(' to the stack
             push(operations, *str);
@@ -129,29 +146,37 @@ char* infixToPostfix(char* str){
                 next++;
             }
             if (isOperator(*next) || *next == ')' || lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS) {
+                printf("line 149");
                 return NULL;
             }
             lastToken = LEFT_PARENTHESIS;
         } else if (*str == ')') {
+            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
+                printf("line 155");
+                return NULL;
+            }
             // pop the stack until '('
             // add the popped operators to the result
             char operation = ')';
             while (operation != '(') {  //(((((emre + 1234523523)))))
-                if (getSize(operations) == 0)
+                if (getSize(operations) == 0){
+                    printf("line 163");
                     return NULL; // if there is no ( that means it it error
+                }
                 operation = pop(operations);
                 if (operation!='(') {
-                *result++ = operation;
-                *result++ = ' ';
+                    *result++ = operation;
+                    *result++ = ' ';
                 }
             }
-            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION)
-                return NULL;
 
             lastToken = RIGHT_PARENTHESIS;
         } else if (isOperator(*str)) {
-            // TODO pop the stack until top of the stack has lower precedence than the operator
-
+            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
+                printf("line 176");
+                return NULL;
+            }
+            // pop the stack until the precedence of the current operator is higher than the top of the stack
             int currPrec = getPrecedence(str);
             if (getSize(operations)>0) {
                 char c = peek(operations);
@@ -164,19 +189,28 @@ char* infixToPostfix(char* str){
             }
             push(operations, *str);
 
-            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION)
-                return NULL;
             lastToken = OPERATOR;
             
         } else if (*str == ','){
-// TODO look up functions
-        if (getSize(functions)==0) {
-            return NULL;
-        }
-        char op = pop(functions);
-        push(operations, op);
+            if (getSize(functions)==0 || lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
+                printf("line 196");
+                return NULL;
+            }
+            // use the comma as an operator for a function
+            char op = pop(functions);
 
+            int currPrec = getPrecedence(&op);
+            if (getSize(operations)>0) {
+                char c = peek(operations);
 
+                while (getSize(operations)>0 && currPrec<=getPrecedence(&c)) {
+                    *result++ = pop(operations);
+                    *result++ = ' ';
+                    c = peek(operations);
+                }
+            }
+            push(operations, op);
+            lastToken = OPERATOR;
         } else {
             // if the character is not valid that means it is error
             return NULL;
@@ -192,6 +226,10 @@ char* infixToPostfix(char* str){
         *result++ = operation;
         *result++ = ' ';
     }
+    if (lastToken == OPERATOR || lastToken == LEFT_PARENTHESIS || lastToken == FUNCTION)
+        return NULL;
+
+    *result = '\0';
     return copy;
 }
 
@@ -200,8 +238,4 @@ int* evaluateExpression(char* str){
         
     }
     return NULL;
-}
-
-char getFunction(char* str){
-    return '\0';
 }

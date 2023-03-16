@@ -20,3 +20,4 @@ char* getVariable(Variable* table, char* key);
 void setVariable(Variable* table, char* key, char* value);
 char peek(Stack* stack);
 int getPrecedence(char* str);
+char* isFunction(char* str);

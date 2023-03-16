@@ -17,17 +17,44 @@ int hash(char* str){
 // if not return NULL
 char* getVariable(Variable* table, char* key){
     int index = hash(key);
-    if ((table+index)->key != key){
+    while ((table+index)->key != NULL && (table+index)->key != key){
+        index++;
+    }
+    if ((table+index)->key == key) {
         return (table+index)->value;
     }
-    return NULL;
+    return "0";
 }
 
 // set the variable to the table
 void setVariable(Variable* table, char* key, char* value){
     int index = hash(key);
-    table[index].key = key;
-    table[index].value = value;
+    while ((table+index)->key != NULL && (table+index)->key != key){
+        index++;
+    }
+    if ((table+index)->key == NULL) {
+        (table+index)->key = key;
+    }
+    (table+index)->value = value;
+}
+
+// returns the function symbol if the string is a function
+// otherwise returns NULL
+char* isFunction(char* str){
+    if (strcmp(str, "rox ") == 0) {
+        return "^";
+    }else if (strcmp(str, "sr ") == 0) {
+        return "!";
+    }else if (strcmp(str, "sl ") == 0) {
+        return "$";
+    }else if (strcmp(str, "rr ") == 0) {
+        return "@";
+    }else if (strcmp(str, "rl ") == 0) {
+        return "#";
+    }else if (strcmp(str, "ton ") == 0) {
+        return "~";
+    }
+    return NULL;
 }
 
 // returns 1 if the string is an operator
