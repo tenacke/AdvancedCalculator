@@ -49,7 +49,8 @@ int main(){
         printf("%s", right);
         // check if the expression is valid and set the variable
         if (result){
-          setVariable(variables, left, *result);
+            // dont forget to convert result to string
+            setVariable(variables, left, (char*) result);
         }else{
             printf("Error!");
         }
@@ -172,7 +173,7 @@ char* infixToPostfix(char* str){
         if (getSize(functions)==0) {
             return NULL;
         }
-        char* op = pop(functions);
+        char op = pop(functions);
         push(operations, op);
 
 

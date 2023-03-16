@@ -20,6 +20,7 @@ char* getVariable(Variable* table, char* key){
     if ((table+index)->key != key){
         return (table+index)->value;
     }
+    return NULL;
 }
 
 // set the variable to the table
