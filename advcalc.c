@@ -42,7 +42,7 @@ int main(){
         right = strip(right); //right hand side
         right = infixToPostfix(right); //convert to postfix
         int* result = evaluateExpression(right);
-
+        printf("%s", right);
         // check if the expression is valid and set the variable
         if (result){
           setVariable(left, *result);
@@ -81,7 +81,7 @@ char* infixToPostfix(char* str){
             char next = *(str+1);
             if (isspace(next) || next == ')' || isOperator(next)){
                 // add the memory to the result and clear the memory
-                
+                printf("%s", *str);
                 while (getSize(memory) > 0) {
                     *result++ = pop(memory);
                 }
