@@ -12,6 +12,16 @@ char* RR = "rr";
 char* LR = "lr";
 char* NOT = "not";
 
+enum tokens {
+    NUMBER,
+    VARIABLE,
+    OPERATOR,
+    FUNCTION,
+    LEFT_PARENTHESIS,
+    RIGHT_PARENTHESIS,
+    NONE
+};
+
 // check if the variable is defined and return its value
 // if not return NULL
 int* getVariable(char* str);
@@ -31,7 +41,6 @@ int main(){
   while (fgets(str, sizeof(str), stdin) && str != NULL) {
        // check for comments
        split(str, '%');
-
       // check '=' for the line is assignment or not
       char* right = split(str, '=');
       
@@ -68,6 +77,7 @@ int main(){
 }
 
 char* infixToPostfix(char* str){
+    enum tokens lastToken = OPERATOR;
     Stack* operations = initializeStack();
     // memory for digits and letters
     Stack* memory = initializeStack(); 
@@ -86,7 +96,8 @@ char* infixToPostfix(char* str){
                     *result++ = pop(memory);
                 }
                 *result++ = ' ';
-            } else if (!isdigit(next)){ 
+                lastToken = NUMBER;
+            } else if (!isdigit(next) || lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS || lastToken == FUNCTION){ 
                 // if the next character is not digit or space or ')' or operator or digit that means it is error
                 return NULL;
             }
@@ -112,18 +123,29 @@ char* infixToPostfix(char* str){
         } else if (*str == '(') {
             // push the '(' to the stack
             push(operations, *str);
+            char* next = str+1;
+            while (*next == ' '){
+                next++;
+            }
+            if (isOperator(*next) || *next == ')' || lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS) {
+                return NULL;
+            }
+            lastToken = LEFT_PARENTHESIS;
         } else if (*str == ')') {
             // pop the stack until '('
             // add the popped operators to the result
-            char operation = pop(operations);
+            char operation = ')';
             while (operation != '(') {
                 if (getSize(operations) == 0)
-                    return NULL; // if the stack is empty that means it it error
+                    return NULL; // if there is no ( that means it it error
+                operation = pop(operations);
                 *result++ = operation;
                 *result++ = ' ';
-                operation = pop(operations);
             }
+            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION)
+                return NULL;
 
+            lastToken = RIGHT_PARENTHESIS;
         } else if (isOperator(*str)) {
             // TODO pop the stack until top of the stack has lower precedence than the operator
             push(operations, *str);
@@ -157,7 +179,7 @@ int* evaluateExpression(char* str){
 }
 
 int* getVariable(char* str){
-  return NULL;
+    return NULL;
 }
 
 void setVariable(char* str, int value){
