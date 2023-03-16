@@ -135,12 +135,14 @@ char* infixToPostfix(char* str){
             // pop the stack until '('
             // add the popped operators to the result
             char operation = ')';
-            while (operation != '(') {
+            while (operation != '(') {  //(((((emre + 1234523523)))))
                 if (getSize(operations) == 0)
                     return NULL; // if there is no ( that means it it error
                 operation = pop(operations);
+                if (operation!='(') {
                 *result++ = operation;
                 *result++ = ' ';
+                }
             }
             if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION)
                 return NULL;
