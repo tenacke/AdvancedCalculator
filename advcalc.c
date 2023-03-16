@@ -47,7 +47,7 @@ int main(){
         if (result){
           setVariable(left, *result);
         }else{
-        printf("Error!");
+            printf("Error!");
         }
 
       }else{ // means that line is not assignment
@@ -55,6 +55,7 @@ int main(){
         char* expr = strip(str);
         expr = infixToPostfix(expr);
         int* result = evaluateExpression(expr);
+        printf("%s", expr);
         if (result){
           printf("%d", *result);
         }else{
@@ -78,8 +79,9 @@ char* infixToPostfix(char* str){
             // add the digit to the memory
             push(memory, *str);
             char next = *(str+1);
-            if (isspace(next) || next == ')' || isoperator(next)){
+            if (isspace(next) || next == ')' || isOperator(next)){
                 // add the memory to the result and clear the memory
+                
                 while (getSize(memory) > 0) {
                     *result++ = pop(memory);
                 }
@@ -91,7 +93,7 @@ char* infixToPostfix(char* str){
         } else if (isalpha(*str)) {
             push(memory, *str);
             char next = *(str+1);
-            if (isspace(next) || next == '(' || next == ')' || isoperator(next)){
+            if (isspace(next) || next == '(' || next == ')' || isOperator(next)){
                 // add the memory to the result and clear the memory
 // TODO handle functions here
                 char* temp = (char*) malloc(sizeof(char)*getSize(memory)); 
@@ -122,7 +124,7 @@ char* infixToPostfix(char* str){
                 operation = pop(operations);
             }
 
-        } else if (isoperator(*str)) {
+        } else if (isOperator(*str)) {
             // pop the stack until top of the stack has lower precedence than the operator
             
             if (getSize(operations) == 0){
