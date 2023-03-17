@@ -41,17 +41,17 @@ void setVariable(Variable* table, char* key, char* value){
 // returns the function symbol if the string is a function
 // otherwise returns NULL
 char* isFunction(char* str){
-    if (strcmp(str, "rox ") == 0) {
+    if (strcmp(str, "rox") == 0) {
         return "^";
-    }else if (strcmp(str, "sr ") == 0) {
+    }else if (strcmp(str, "sr") == 0) {
         return "!";
-    }else if (strcmp(str, "sl ") == 0) {
+    }else if (strcmp(str, "sl") == 0) {
         return "$";
-    }else if (strcmp(str, "rr ") == 0) {
+    }else if (strcmp(str, "rr") == 0) {
         return "@";
-    }else if (strcmp(str, "rl ") == 0) {
+    }else if (strcmp(str, "rl") == 0) {
         return "#";
-    }else if (strcmp(str, "ton ") == 0) {
+    }else if (strcmp(str, "ton") == 0) {
         return "~";
     }
     return NULL;
@@ -103,9 +103,6 @@ Stack* initializeStack(){
 IntStack* initializeIntStack(){
     return (IntStack*) malloc(sizeof(IntStack));
 }
-IntStack* initializeIntStack(){
-    return (IntStack*) malloc(sizeof(IntStack));
-}
 
 // push the char to the stack
 void push(Stack* stack, char str){
@@ -114,16 +111,9 @@ void push(Stack* stack, char str){
 void pushInt(IntStack* stack, int x){
     (*stack).elements[(*stack).size++] = x;
 }
-void pushInt(IntStack* stack, int x){
-    (*stack).elements[(*stack).size++] = x;
-}
-
 // pop the char from the stack
 char pop(Stack* stack){
     return (*stack).elems[--(*stack).size];
-}
-int popInt(IntStack* stack){
-    return (*stack).elements[--(*stack).size];
 }
 int popInt(IntStack* stack){
     return (*stack).elements[--(*stack).size];
@@ -136,9 +126,6 @@ char peek(Stack* stack){
 
 // get the size of the stack
 int getSize(Stack* stack){
-    return (*stack).size;
-}
-int getIntSize(IntStack* stack){
     return (*stack).size;
 }
 int getIntSize(IntStack* stack){
@@ -200,42 +187,5 @@ int performOp(int a, int b, char c) {
     else if (c == '#') {
         return (a<<b)|(a>>(64-b));
     }
-
-
-}
-
-
-int performOp(int a, int b, char c) {
-    if (c == '+') {
-        return a+b;
-    }
-    else if (c == '-') {
-        return a-b;
-    }
-    else if (c == '*') {
-        return a*b;
-    }
-    else if (c == '&') {
-        return a&b;
-    }
-    else if (c == '|') {
-        return a|b;
-    }
-    else if (c == '^') {
-        return a^b;
-    }
-    else if (c == '!') {
-        return a>>b;
-    }
-    else if (c == '$') {
-        return a<<b;
-    }
-     else if (c == '@') {
-        return (a>>b)|(a<<(64-b));
-    }
-    else if (c == '#') {
-        return (a<<b)|(a>>(64-b));
-    }
-
-
+    return 0;
 }

@@ -104,21 +104,6 @@ int main(){
         printf("> ");
     }
     return 0;
-      }else{ // means that line is not assignment
-        // evaluate the expression
-        char* expr = strip(str);
-        expr = infixToPostfix(expr);
-        int result = evaluateExpression(expr);
-        if (result){
-          printf("%d", result);
-        }else{
-        printf("Error!");
-        }
-      }
-    printf("\n");
-    printf("> ");
-  }
-  return 0;
 }
 
 char* infixToPostfix(char* str){
