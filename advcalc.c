@@ -91,7 +91,7 @@ int main(){
             // evaluate the expression
             char* expr = strip(str);
             expr = infixToPostfix(expr);
-            int result = evaluateExpression(expr);
+            int* result = evaluateExpression(expr);
             if (result){
             printf("%d", result);
             }else{
@@ -290,8 +290,8 @@ int* evaluateExpression(char* str){
             }
             str++;
         }
-        int a = popInt(res);
-            return &a;
+        int* a = popInt(res);
+        return a;
         }
 
     return NULL;
