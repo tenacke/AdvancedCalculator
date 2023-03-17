@@ -41,17 +41,17 @@ void setVariable(Variable* table, char* key, char* value){
 // returns the function symbol if the string is a function
 // otherwise returns NULL
 char* isFunction(char* str){
-    if (strcmp(str, "rox ") == 0) {
+    if (strcmp(str, "rox") == 0) {
         return "^";
-    }else if (strcmp(str, "sr ") == 0) {
+    }else if (strcmp(str, "sr") == 0) {
         return "!";
-    }else if (strcmp(str, "sl ") == 0) {
+    }else if (strcmp(str, "sl") == 0) {
         return "$";
-    }else if (strcmp(str, "rr ") == 0) {
+    }else if (strcmp(str, "rr") == 0) {
         return "@";
-    }else if (strcmp(str, "rl ") == 0) {
+    }else if (strcmp(str, "rl") == 0) {
         return "#";
-    }else if (strcmp(str, "ton ") == 0) {
+    }else if (strcmp(str, "ton") == 0) {
         return "~";
     }
     return NULL;
@@ -99,6 +99,9 @@ char* split(char* str, char find) {
 // initialize the stack
 Stack* initializeStack(){
     return (Stack*) malloc(sizeof(Stack));
+}
+IntStack* initializeIntStack(){
+    return (IntStack*) malloc(sizeof(IntStack));
 }
 IntStack* initializeIntStack(){
     return (IntStack*) malloc(sizeof(IntStack));
