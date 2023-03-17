@@ -100,15 +100,24 @@ char* split(char* str, char find) {
 Stack* initializeStack(){
     return (Stack*) malloc(sizeof(Stack));
 }
+IntStack* initializeIntStack(){
+    return (IntStack*) malloc(sizeof(IntStack));
+}
 
 // push the char to the stack
 void push(Stack* stack, char str){
     (*stack).elems[(*stack).size++] = str;
 }
+void pushInt(IntStack* stack, int x){
+    (*stack).elements[(*stack).size++] = x;
+}
 
 // pop the char from the stack
 char pop(Stack* stack){
     return (*stack).elems[--(*stack).size];
+}
+int popInt(IntStack* stack){
+    return (*stack).elements[--(*stack).size];
 }
 
 // peek the char at the top of the stack
@@ -118,6 +127,9 @@ char peek(Stack* stack){
 
 // get the size of the stack
 int getSize(Stack* stack){
+    return (*stack).size;
+}
+int getIntSize(IntStack* stack){
     return (*stack).size;
 }
 
@@ -143,4 +155,39 @@ int getPrecedence(char* str){
             return 7;
     } 
     return 0;
+}
+
+int performOp(int a, int b, char c) {
+    if (c == '+') {
+        return a+b;
+    }
+    else if (c == '-') {
+        return a-b;
+    }
+    else if (c == '*') {
+        return a*b;
+    }
+    else if (c == '&') {
+        return a&b;
+    }
+    else if (c == '|') {
+        return a|b;
+    }
+    else if (c == '^') {
+        return a^b;
+    }
+    else if (c == '!') {
+        return a>>b;
+    }
+    else if (c == '$') {
+        return a<<b;
+    }
+     else if (c == '@') {
+        return (a>>b)|(a<<(64-b));
+    }
+    else if (c == '#') {
+        return (a<<b)|(a>>(64-b));
+    }
+
+
 }

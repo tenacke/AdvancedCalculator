@@ -26,7 +26,7 @@ enum tokens {
 };
 
 // evaluate the expression and return NULL if it is not valid
-int* evaluateExpression(char* str);
+int evaluateExpression(char* str);
 
 // convert infix expression to postfix expression
 char* infixToPostfix(char* str);
@@ -45,12 +45,18 @@ int main(){
         //evaluate the expression
         right = strip(right); //right hand side
         right = infixToPostfix(right); //convert to postfix
-        int* result = evaluateExpression(right);
-        printf("%s", right);
+        int result = evaluateExpression(right);
+        char* res = (char*) malloc(sizeof(char)*500);
+        char* res1 = res;
+        while (result>0) {
+            *res++ = '0'+result%10;
+            result= result/10;
+        }
+        *res = '\0';
+
         // check if the expression is valid and set the variable
-        if (result){
-            // dont forget to convert result to string
-            setVariable(variables, left, (char*) result);
+        if (res1){
+            setVariable(variables, left, res1);
         }else{
             printf("Error!");
         }
@@ -59,10 +65,9 @@ int main(){
         // evaluate the expression
         char* expr = strip(str);
         expr = infixToPostfix(expr);
-        int* result = evaluateExpression(expr);
-        printf("%s", expr);
+        int result = evaluateExpression(expr);
         if (result){
-          printf("%d", *result);
+          printf("%d", result);
         }else{
         printf("Error!");
         }
@@ -233,9 +238,37 @@ char* infixToPostfix(char* str){
     return copy;
 }
 
-int* evaluateExpression(char* str){
+int evaluateExpression(char* str){
     if (str) {
-        
-    }
-    return NULL;
+        int power = 1;
+        int myVar = -1;
+        IntStack* res = initializeIntStack();
+
+       while (*str!='\0') {
+        if (isdigit(*str)) {
+            if (myVar == -1) {
+                myVar = 0;
+            }
+            myVar+=((int)(*str)-(int)('0'))*power;
+            power*=10;
+        }
+        else if (*str == ' ' && myVar!=-1) {
+            pushInt(res, myVar);
+            myVar = -1;
+            power = 1;
+        }
+        else if (*str == '~'){
+            pushInt(res, ~popInt(res));
+
+        }
+        else if (*str != ' '){
+            pushInt(res, performOp(popInt(res), popInt(res), *str));
+        }
+        str++;
+       }
+       int a = popInt(res);
+        return a;
+       }
+
+    return 0;
 }
