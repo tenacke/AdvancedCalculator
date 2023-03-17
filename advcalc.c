@@ -86,7 +86,7 @@ int main(){
 
             // check if the expression is valid and set the variable
                 setVariable(variables, left, res1);
-            }else{
+            } else{
                 printf("Error!");
             }
 
@@ -265,7 +265,7 @@ char* infixToPostfix(char* str){
     return copy;
 }
 
-int* evaluateExpression(char* str){
+int** evaluateExpression(char* str){
     if (str) {
         int power = 1;
         int myVar = -1;
