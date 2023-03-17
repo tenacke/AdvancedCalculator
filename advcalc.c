@@ -32,45 +32,45 @@ int* evaluateExpression(char* str);
 char* infixToPostfix(char* str);
 
 int main(){
-  char str[256+1] = "";
-  printf("> ");
-  while (fgets(str, sizeof(str), stdin)) {
-       // check for comments
-       split(str, '%');
-      // check '=' for the line is assignment or not
-      char* right = split(str, '=');
-      
-      if (right){ // means that line is assignment
-        char* left = strip(str); //left hand side
-        //evaluate the expression
-        right = strip(right); //right hand side
-        right = infixToPostfix(right); //convert to postfix
-        int* result = evaluateExpression(right);
-        printf("%s", right);
-        // check if the expression is valid and set the variable
-        if (result){
-            // dont forget to convert result to string
-            setVariable(variables, left, (char*) result);
-        }else{
-            printf("Error!");
-        }
-
-      }else{ // means that line is not assignment
-        // evaluate the expression
-        char* expr = strip(str);
-        expr = infixToPostfix(expr);
-        int* result = evaluateExpression(expr);
-        printf("%s", expr);
-        if (result){
-          printf("%d", *result);
-        }else{
-        printf("Error!");
-        }
-      }
-    printf("\n");
+    char str[256+1] = "";
     printf("> ");
-  }
-  return 0;
+    while (fgets(str, sizeof(str), stdin)) {
+        // check for comments
+            split(str, '%');
+        // check '=' for the line is assignment or not
+            char* right = split(str, '=');
+            
+        if (right){ // means that line is assignment
+            char* left = strip(str); //left hand side
+            //evaluate the expression
+            right = strip(right); //right hand side
+            right = infixToPostfix(right); //convert to postfix
+            int* result = evaluateExpression(right);
+            printf("%s", right);
+            // check if the expression is valid and set the variable
+            if (result){
+                // dont forget to convert result to string
+                setVariable(variables, left, (char*) result);
+            }else{
+                printf("Error!");
+            }
+
+        }else{ // means that line is not assignment
+            // evaluate the expression
+            char* expr = strip(str);
+            expr = infixToPostfix(expr);
+            int* result = evaluateExpression(expr);
+            printf("%s", expr);
+            if (result){
+            printf("%d", *result);
+            }else{
+            printf("Error!");
+            }
+        }
+        printf("\n");
+        printf("> ");
+    }
+    return 0;
 }
 
 char* infixToPostfix(char* str){
