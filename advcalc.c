@@ -26,8 +26,7 @@ enum tokens {
 };
 
 // evaluate the expression and return NULL if it is not valid
-int evaluateExpression(char* str);
-int evaluateExpression(char* str);
+int* evaluateExpression(char* str);
 
 // convert infix expression to postfix expression
 char* infixToPostfix(char* str);
@@ -73,19 +72,18 @@ int main(){
             //evaluate the expression
             right = strip(right); //right hand side
             right = infixToPostfix(right); //convert to postfix
-            int result = evaluateExpression(right);
-            char* res = (char*) malloc(sizeof(char)*500);
-            char* res1 = res;
-            while (result>0) {
-                *res++ = '0'+result%10;
-                result= result/10;
-            }
-            *res = '\0';
-
-            // check if the expression is valid and set the variable
-            if (res1){
+            int* result = evaluateExpression(right);
+            if (result) {
+                int a = *result;
+                char* res = (char*) malloc(sizeof(char)*500);
+                char* res1 = res;
+                while (a>0) {
+                    *res++ = '0'+a%10;
+                    a= a/10;
+                }
+                *res = '\0';
                 setVariable(variables, left, res1);
-            }else{
+            } else{
                 printf("Error!");
             }
 
@@ -264,7 +262,7 @@ char* infixToPostfix(char* str){
     return copy;
 }
 
-int evaluateExpression(char* str){
+int* evaluateExpression(char* str){
     if (str) {
         int power = 1;
         int myVar = -1;
@@ -293,8 +291,8 @@ int evaluateExpression(char* str){
             str++;
         }
         int a = popInt(res);
-            return a;
+            return &a;
         }
 
-    return 0;
+    return NULL;
 }
