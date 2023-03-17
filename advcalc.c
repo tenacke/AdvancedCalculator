@@ -117,7 +117,6 @@ char* infixToPostfix(char* str){
                 while (getSize(memory) > 0) {
                     *temp++ = pop(memory);
                 }
-                *temp++ = ' ';
                 *temp = '\0';
                 char* func = isFunction(copy);
                 if (func) {
@@ -223,8 +222,7 @@ char* infixToPostfix(char* str){
     }
 
     // empty the operations stack
-    while (getSize(operations))
-    {
+    while (getSize(operations)) {
         char operation = pop(operations);
         if (operation == '(' || operation == ')')
             return NULL;
