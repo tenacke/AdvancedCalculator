@@ -41,7 +41,34 @@ int main(){
             char* right = split(str, '=');
             
         if (right){ // means that line is assignment
-            char* left = strip(str); //left hand side
+            char *left, temp; //left hand side
+            left = strip(str);
+            int len = strlen(left) -1;
+            // check if the left side is valid
+            for (int i = 0; i < len; i++) {
+                temp = *(left+i);
+                *(left+i) = *(left+len);
+                *(left+len) = temp;
+                len--;
+            }
+
+            char* func = isFunction(left);
+            int invalid = 0;
+            for (int i = 0; i < strlen(left); i++) {
+                if (!isalpha(*(left+i))) {
+                    invalid = 1;
+                    break;
+                }
+            }
+
+            if (func || invalid) {
+                printf("line 65");
+                printf("Error!");
+                printf("\n> ");
+                continue;
+            }
+            
+
             //evaluate the expression
             right = strip(right); //right hand side
             right = infixToPostfix(right); //convert to postfix
@@ -112,7 +139,6 @@ char* infixToPostfix(char* str){
                 while (getSize(memory) > 0) {
                     *temp++ = pop(memory);
                 }
-                *temp++ = ' ';
                 *temp = '\0';
                 char* func = isFunction(copy);
                 if (func) {
@@ -218,8 +244,7 @@ char* infixToPostfix(char* str){
     }
 
     // empty the operations stack
-    while (getSize(operations))
-    {
+    while (getSize(operations)) {
         char operation = pop(operations);
         if (operation == '(' || operation == ')')
             return NULL;
