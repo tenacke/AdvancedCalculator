@@ -26,8 +26,7 @@ enum tokens {
 };
 
 // evaluate the expression and return NULL if it is not valid
-int evaluateExpression(char* str);
-int evaluateExpression(char* str);
+int* evaluateExpression(char* str);
 
 // convert infix expression to postfix expression
 char* infixToPostfix(char* str);
@@ -73,8 +72,11 @@ int main(){
             //evaluate the expression
             right = strip(right); //right hand side
             right = infixToPostfix(right); //convert to postfix
-            int result = evaluateExpression(right);
-            char* res = (char*) malloc(sizeof(char)*500);
+            int* expression = evaluateExpression(right);
+
+            if (expression) {
+            int result = *expression;
+            char* res = (char*) malloc(sizeof(char)*25);
             char* res1 = res;
             while (result>0) {
                 *res++ = '0'+result%10;
@@ -83,7 +85,6 @@ int main(){
             *res = '\0';
 
             // check if the expression is valid and set the variable
-            if (res1){
                 setVariable(variables, left, res1);
             }else{
                 printf("Error!");
@@ -93,7 +94,7 @@ int main(){
             // evaluate the expression
             char* expr = strip(str);
             expr = infixToPostfix(expr);
-            int result = evaluateExpression(expr);
+            int result = *evaluateExpression(expr);
             if (result){
             printf("%d", result);
             }else{
@@ -104,21 +105,6 @@ int main(){
         printf("> ");
     }
     return 0;
-      }else{ // means that line is not assignment
-        // evaluate the expression
-        char* expr = strip(str);
-        expr = infixToPostfix(expr);
-        int result = evaluateExpression(expr);
-        if (result){
-          printf("%d", result);
-        }else{
-        printf("Error!");
-        }
-      }
-    printf("\n");
-    printf("> ");
-  }
-  return 0;
 }
 
 char* infixToPostfix(char* str){
@@ -279,7 +265,7 @@ char* infixToPostfix(char* str){
     return copy;
 }
 
-int evaluateExpression(char* str){
+int* evaluateExpression(char* str){
     if (str) {
         int power = 1;
         int myVar = -1;
@@ -308,8 +294,8 @@ int evaluateExpression(char* str){
             str++;
         }
         int a = popInt(res);
-            return a;
+        return &a;
         }
 
-    return 0;
+    return NULL;
 }
