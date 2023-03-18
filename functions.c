@@ -20,10 +20,10 @@ char* getVariable(Variable* table, char* key){
     while ((table+index)->key != NULL && !compare((table+index)->key, key)){
         index++;
     }
-    if (compare((table+index)->key, key)) {
-        return (table+index)->value;
+    if ((table+index)->key == NULL) {
+        return "0";
     }
-    return "0";
+    return (table+index)->value;
 }
 
 // set the variable to the table
@@ -107,7 +107,7 @@ IntStack* initializeIntStack(){
 void push(Stack* stack, char str){
     (*stack).elems[(*stack).size++] = str;
 }
-void pushInt(IntStack* stack, int x){
+void pushInt(IntStack* stack, lli x){
     (*stack).elements[(*stack).size++] = x;
 }
 
@@ -115,7 +115,7 @@ void pushInt(IntStack* stack, int x){
 char pop(Stack* stack){
     return (*stack).elems[--(*stack).size];
 }
-int popInt(IntStack* stack){
+lli popInt(IntStack* stack){
     return (*stack).elements[--(*stack).size];
 }
 
@@ -158,7 +158,7 @@ int getPrecedence(char* str){
 
 
 
-int performOp(int a, int b, char c) {
+lli performOp(lli a, lli b, char c) {
     if (c == '+') {
         return a+b;
     }

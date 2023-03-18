@@ -1,3 +1,4 @@
+typedef long long int lli;
 typedef struct {
   char elems[256];
   int size;
@@ -10,6 +11,15 @@ typedef struct {
   char* key;
   char* value;
 } Variable;
+enum tokens {
+    NUMBER,
+    VARIABLE,
+    OPERATOR,
+    FUNCTION,
+    LEFT_PARENTHESIS,
+    RIGHT_PARENTHESIS,
+    NONE
+};
 int isOperator(char str);
 char* leftStripper(char* str);
 char* rightStripper(char* str);
@@ -18,13 +28,13 @@ char* split(char* str, char find);
 Stack* initializeStack();
 IntStack* initializeIntStack();
 void push(Stack* stack, char str);
-void pushInt(IntStack* stack, int x);
+void pushInt(IntStack* stack, lli x);
 
 char pop(Stack* stack);
-int popInt(IntStack* stack);
+lli popInt(IntStack* stack);
 int getSize(Stack* stack);
 int getIntSize(IntStack* stack);
-int performOp(int a, int b, char c);
+lli performOp(lli a, lli b, char c);
 
 int hash(char* str);
 char* getVariable(Variable* table, char* key);

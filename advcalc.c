@@ -5,29 +5,11 @@
 #include <ctype.h>
 #include "functions.h"
 
-// functions
-char* XOR = "xor"; // ^
-char* RS = "rs"; // !
-char* LS = "ls"; // $
-char* RR = "rr"; // @
-char* LR = "lr"; // #
-char* NOT = "not"; // ~
-
 // variables
 Variable* variables;
 
-enum tokens {
-    NUMBER,
-    VARIABLE,
-    OPERATOR,
-    FUNCTION,
-    LEFT_PARENTHESIS,
-    RIGHT_PARENTHESIS,
-    NONE
-};
-
 // evaluate the expression and return NULL if it is not valid
-int evaluateExpression(char* str);
+lli evaluateExpression(char* str);
 
 // convert infix expression to postfix expression
 char* infixToPostfix(char* str);
@@ -66,7 +48,6 @@ int main(){
                 }
 
                 if (func || invalid) {
-                    printf("line 65");
                     printf("Error!");
                     printf("\n> ");
                     continue;
@@ -76,9 +57,9 @@ int main(){
             //evaluate the expression
             right = strip(right); //right hand side
             right = infixToPostfix(right); //convert to postfix
-            int result = evaluateExpression(right);
+            lli result = evaluateExpression(right);
             if (right) {
-                int a = result;
+                lli a = result;
                 char* res = (char*) malloc(sizeof(char)*25);
                 char* res1 = res;
                 bool isNeg = false;
@@ -107,14 +88,15 @@ int main(){
             // evaluate the expression
             char* expr = strip(str);
             expr = infixToPostfix(expr);
-            int result = evaluateExpression(expr);
+            lli result = evaluateExpression(expr);
             if (expr){
-                printf("%d ", result);
+                printf("%lld", result);
             }else{
                 printf("Error!");
             }
+            printf("\n");
         }
-        printf("\n");
+        
         printf("> ");
     }
     return 0;
@@ -145,7 +127,6 @@ char* infixToPostfix(char* str){
                 lastToken = NUMBER;
             } else if (!isdigit(next) || lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS || lastToken == FUNCTION){ 
                 // if the next character is not digit or space or ')' or operator or digit that means it is error
-                printf("line 102");
                 return NULL;
             }
         } else if (isalpha(*str)) {
@@ -178,7 +159,6 @@ char* infixToPostfix(char* str){
 
             } else if (!isalpha(next) || lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS || lastToken == FUNCTION){ 
                 // if the next character is not letter or space or parenthesis or operator or digit that means it is error
-                printf("line 136");
                 return NULL;
             }
         } else if (isspace(*str)) {
@@ -191,13 +171,11 @@ char* infixToPostfix(char* str){
                 next++;
             }
             if (isOperator(*next) || *next == ')' || lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS) {
-                printf("line 149");
                 return NULL;
             }
             lastToken = LEFT_PARENTHESIS;
         } else if (*str == ')') {
             if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
-                printf("line 155");
                 return NULL;
             }
             // pop the stack until '('
@@ -205,7 +183,6 @@ char* infixToPostfix(char* str){
             char operation = ')';
             while (operation != '(') {  //(((((emre + 1234523523)))))
                 if (getSize(operations) == 0){
-                    printf("line 163");
                     return NULL; // if there is no ( that means it it error
                 }
                 operation = pop(operations);
@@ -218,7 +195,6 @@ char* infixToPostfix(char* str){
             lastToken = RIGHT_PARENTHESIS;
         } else if (isOperator(*str)) {
             if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
-                printf("line 176");
                 return NULL;
             }
             // pop the stack until the precedence of the current operator is higher than the top of the stack
@@ -238,7 +214,6 @@ char* infixToPostfix(char* str){
             
         } else if (*str == ','){
             if (getSize(functions)==0 || lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
-                printf("line 196");
                 return NULL;
             }
             // use the comma as an operator for a function
@@ -277,7 +252,7 @@ char* infixToPostfix(char* str){
     return copy;
 }
 
-int evaluateExpression(char* str){
+lli evaluateExpression(char* str){
     if (str) {
         int power = 1;
         int myVar = -1;
@@ -288,7 +263,7 @@ int evaluateExpression(char* str){
                 if (myVar == -1) {
                     myVar = 0;
                 }
-                myVar+=((int)(*str)-(int)('0'))*power;
+                myVar+=((lli)(*str)-(lli)('0'))*power;
                 power*=10;
                 if (*(str+1)=='-') {
                     myVar = myVar*-1;
@@ -309,7 +284,7 @@ int evaluateExpression(char* str){
             }
             str++;
         }
-        int a = popInt(res);
+        lli a = popInt(res);
         return a;
         }
 
