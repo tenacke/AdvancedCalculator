@@ -89,13 +89,14 @@ int main(){
             // evaluate the expression
             char* expr = strip(str);
             expr = infixToPostfix(expr);
-            if (lastToken == NONE) {
-                printf("> ");
-                continue;
-            }
-
-            lli result = evaluateExpression(expr);
+            
             if (expr){
+                if (lastToken == NONE) {
+                    printf("> ");
+                    continue;
+                }
+                
+                lli result = evaluateExpression(expr);
                 printf("%lld", result);
             }else{
                 printf("Error!");
