@@ -17,10 +17,10 @@ int hash(char* str){
 // if not return NULL
 char* getVariable(Variable* table, char* key){
     int index = hash(key);
-    while ((table+index)->key != NULL && (table+index)->key != key){
+    while ((table+index)->key != NULL && strcmp((table+index)->key, key)){
         index++;
     }
-    if ((table+index)->key == key) {
+    if (strcmp((table+index)->key, key) == 0) {
         return (table+index)->value;
     }
     return "0";
@@ -29,7 +29,7 @@ char* getVariable(Variable* table, char* key){
 // set the variable to the table
 void setVariable(Variable* table, char* key, char* value){
     int index = hash(key);
-    while ((table+index)->key != NULL && (table+index)->key != key){
+    while ((table+index)->key != NULL && strcmp((table+index)->key, key)){
         index++;
     }
     if ((table+index)->key == NULL) {

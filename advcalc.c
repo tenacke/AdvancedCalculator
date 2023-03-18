@@ -32,6 +32,7 @@ int* evaluateExpression(char* str);
 char* infixToPostfix(char* str);
 
 int main(){
+    variables = (Variable*) calloc(256, sizeof(Variable));
     char str[256+1] = "";
     printf("> ");
     while (fgets(str, sizeof(str), stdin)) {
@@ -41,32 +42,32 @@ int main(){
         char* right = split(str, '=');
         
         if (right){ // means that line is assignment
-                char *left, temp; //left hand side
-                left = strip(str);
-                int len = strlen(left) -1;
-                // check if the left side is valid
-                for (int i = 0; i < len; i++) {
-                    temp = *(left+i);
-                    *(left+i) = *(left+len);
-                    *(left+len) = temp;
-                    len--;
-                }
+            char *left, temp; //left hand side
+            left = strip(str);
+            int len = strlen(left) -1;
+            // check if the left side is valid
+            for (int i = 0; i < len; i++) {
+                temp = *(left+i);
+                *(left+i) = *(left+len);
+                *(left+len) = temp;
+                len--;
+            }
 
-                char* func = isFunction(left);
-                int invalid = 0;
-                for (int i = 0; i < strlen(left); i++) {
-                    if (!isalpha(*(left+i))) {
-                        invalid = 1;
-                        break;
-                    }
+            char* func = isFunction(left);
+            int invalid = 0;
+            for (int i = 0; i < strlen(left); i++) {
+                if (!isalpha(*(left+i))) {
+                    invalid = 1;
+                    break;
                 }
+            }
 
-                if (func || invalid) {
-                    printf("line 65");
-                    printf("Error!");
-                    printf("\n> ");
-                    continue;
-                }
+            if (func || invalid) {
+                printf("line 65");
+                printf("Error!");
+                printf("\n> ");
+                continue;
+            }
                 
 
             //evaluate the expression
@@ -82,6 +83,7 @@ int main(){
                     a= a/10;
                 }
                 *res = '\0';
+                printf("%s", left);
                 setVariable(variables, left, res1);
             } else{
                 printf("Error!");
@@ -93,7 +95,7 @@ int main(){
             expr = infixToPostfix(expr);
             int* result = evaluateExpression(expr);
             if (result){
-            printf("%d", result);
+            printf("%d", *result);
             }else{
             printf("Error!");
             }
@@ -105,7 +107,6 @@ int main(){
 }
 
 char* infixToPostfix(char* str){
-    variables = (Variable*) calloc(256, sizeof(Variable));
     enum tokens lastToken = OPERATOR;
     Stack* operations = initializeStack();
     // memory for digits and letters
@@ -144,6 +145,7 @@ char* infixToPostfix(char* str){
                     *temp++ = pop(memory);
                 }
                 *temp = '\0';
+                copy = strip(copy);
                 char* func = isFunction(copy);
                 if (func) {
                     if (*func == '~'){
@@ -153,6 +155,7 @@ char* infixToPostfix(char* str){
                     }
                     lastToken = FUNCTION;
                 } else {
+                    printf("%s", copy);
                     char* var = getVariable(variables, copy);
                     while (*var != '\0') {
                         *result++ = *var++;
@@ -290,8 +293,9 @@ int* evaluateExpression(char* str){
             }
             str++;
         }
-        int* a = popInt(res);
-        return a;
+        int a = popInt(res);
+        int *b = &a;
+        return b;
         }
 
     return NULL;
