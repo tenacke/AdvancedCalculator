@@ -30,7 +30,7 @@ enum tokens {
 int* evaluateExpression(char* str);
 
 // convert infix expression to postfix expression
-char* infixToPostfix(char* str, Variable* variables);
+char* infixToPostfix(char* str);
 
 int main(){
     char str[256+1] = "";
@@ -38,7 +38,6 @@ int main(){
     variables = (Variable*) calloc(256, sizeof(Variable));
 
     while (fgets(str, sizeof(str), stdin)) {
-
         // check for comments
         split(str, '%');
         // check '=' for the line is assignment or not
@@ -75,7 +74,7 @@ int main(){
 
             //evaluate the expression
             right = strip(right); //right hand side
-            right = infixToPostfix(right, variables); //convert to postfix
+            right = infixToPostfix(right); //convert to postfix
             int* result = evaluateExpression(right);
             if (result) {
                 int a = (int)result;
@@ -104,8 +103,8 @@ int main(){
         }else{ // means that line is not assignment
             // evaluate the expression
             char* expr = strip(str);
-            expr = infixToPostfix(expr, variables);
-            int* result = evaluateExpression(expr);
+            expr = infixToPostfix(expr);
+            int result = evaluateExpression(expr);
             if (result){
             printf("%d ", result);
             }else{
