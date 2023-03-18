@@ -103,9 +103,6 @@ Stack* initializeStack(){
 IntStack* initializeIntStack(){
     return (IntStack*) malloc(sizeof(IntStack));
 }
-IntStack* initializeIntStack(){
-    return (IntStack*) malloc(sizeof(IntStack));
-}
 
 // push the char to the stack
 void push(Stack* stack, char str){

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <ctype.h>
 #include "functions.h"
 
@@ -29,12 +30,15 @@ enum tokens {
 int* evaluateExpression(char* str);
 
 // convert infix expression to postfix expression
-char* infixToPostfix(char* str);
+char* infixToPostfix(char* str, Variable* variables);
 
 int main(){
     char str[256+1] = "";
     printf("> ");
+    variables = (Variable*) calloc(256, sizeof(Variable));
+
     while (fgets(str, sizeof(str), stdin)) {
+
         // check for comments
         split(str, '%');
         // check '=' for the line is assignment or not
@@ -71,21 +75,28 @@ int main(){
 
             //evaluate the expression
             right = strip(right); //right hand side
-            right = infixToPostfix(right); //convert to postfix
-            int* expression = evaluateExpression(right);
+            right = infixToPostfix(right, variables); //convert to postfix
+            int* result = evaluateExpression(right);
+            if (result) {
+                int a = (int)result;
+                char* res = (char*) malloc(sizeof(char)*25);
+                char* res1 = res;
+                bool isNeg = false;
+                if (a<0) {
+                    isNeg = true;
+                    a = a*-1;
+                }
 
-            if (expression) {
-            int result = *expression;
-            char* res = (char*) malloc(sizeof(char)*25);
-            char* res1 = res;
-            while (result>0) {
-                *res++ = '0'+result%10;
-                result= result/10;
-            }
-            *res = '\0';
-
-            // check if the expression is valid and set the variable
+                while (a>0) {
+                    *res++ = '0'+a%10;
+                    a= a/10;
+                }
+                if (isNeg) {
+                    *res++='-';
+                }
+                *res = '\0';
                 setVariable(variables, left, res1);
+
             } else{
                 printf("Error!");
             }
@@ -93,10 +104,10 @@ int main(){
         }else{ // means that line is not assignment
             // evaluate the expression
             char* expr = strip(str);
-            expr = infixToPostfix(expr);
-            int result = *evaluateExpression(expr);
+            expr = infixToPostfix(expr, variables);
+            int* result = evaluateExpression(expr);
             if (result){
-            printf("%d", result);
+            printf("%d ", result);
             }else{
             printf("Error!");
             }
@@ -107,8 +118,7 @@ int main(){
     return 0;
 }
 
-char* infixToPostfix(char* str){
-    variables = (Variable*) calloc(256, sizeof(Variable));
+char* infixToPostfix(char* str, Variable* variables){
     enum tokens lastToken = OPERATOR;
     Stack* operations = initializeStack();
     // memory for digits and letters
@@ -265,7 +275,7 @@ char* infixToPostfix(char* str){
     return copy;
 }
 
-int** evaluateExpression(char* str){
+int* evaluateExpression(char* str){
     if (str) {
         int power = 1;
         int myVar = -1;
@@ -278,6 +288,10 @@ int** evaluateExpression(char* str){
                 }
                 myVar+=((int)(*str)-(int)('0'))*power;
                 power*=10;
+                if (*(str+1)=='-') {
+                    myVar = myVar*-1;
+                    str++;
+                }
             }
             else if (*str == ' ' && myVar!=-1) {
                 pushInt(res, myVar);
@@ -293,8 +307,8 @@ int** evaluateExpression(char* str){
             }
             str++;
         }
-        int a = popInt(res);
-        return &a;
+        int* a = popInt(res);
+        return a;
         }
 
     return NULL;
