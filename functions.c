@@ -163,7 +163,6 @@ lli performOp(lli a, lli b, char c) {
         return a+b;
     }
     else if (c == '-') {
-        printf("%lld\n", a-b);
         return a-b;
     }
     else if (c == '*') {
