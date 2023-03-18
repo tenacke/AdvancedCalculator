@@ -1,2 +1,2 @@
-advcalc: advcalc.c functions.c 
-    gcc -o advcalc advcalc.c functions.c -I
+advcalc:advcalc.c functions.c
+	gcc advcalc.c functions.c -o advcalc 
