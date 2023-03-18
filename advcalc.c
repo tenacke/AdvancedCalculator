@@ -7,6 +7,7 @@
 
 // variables
 Variable* variables;
+enum tokens lastToken;
 
 // evaluate the expression and return NULL if it is not valid
 lli evaluateExpression(char* str);
@@ -81,13 +82,18 @@ int main(){
                 setVariable(variables, key, res1);
 
             } else{
-                printf("Error!");
+                printf("Error!\n");
             }
 
         }else{ // means that line is not assignment
             // evaluate the expression
             char* expr = strip(str);
             expr = infixToPostfix(expr);
+            if (lastToken == NONE) {
+                printf("> ");
+                continue;
+            }
+
             lli result = evaluateExpression(expr);
             if (expr){
                 printf("%lld", result);
@@ -103,7 +109,7 @@ int main(){
 }
 
 char* infixToPostfix(char* str){
-    enum tokens lastToken = OPERATOR;
+    lastToken = NONE;
     Stack* operations = initializeStack();
     // memory for digits and letters
     Stack* memory = initializeStack(); 
@@ -175,7 +181,7 @@ char* infixToPostfix(char* str){
             }
             lastToken = LEFT_PARENTHESIS;
         } else if (*str == ')') {
-            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
+            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == NONE || lastToken == FUNCTION){
                 return NULL;
             }
             // pop the stack until '('
@@ -194,7 +200,7 @@ char* infixToPostfix(char* str){
 
             lastToken = RIGHT_PARENTHESIS;
         } else if (isOperator(*str)) {
-            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
+            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == NONE || lastToken == FUNCTION){
                 return NULL;
             }
             // pop the stack until the precedence of the current operator is higher than the top of the stack
@@ -213,7 +219,7 @@ char* infixToPostfix(char* str){
             lastToken = OPERATOR;
             
         } else if (*str == ','){
-            if (getSize(functions)==0 || lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
+            if (getSize(functions)==0 || lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == NONE || lastToken == FUNCTION){
                 return NULL;
             }
             // use the comma as an operator for a function
