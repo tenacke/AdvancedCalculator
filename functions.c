@@ -17,10 +17,10 @@ int hash(char* str){
 // if not return NULL
 char* getVariable(Variable* table, char* key){
     int index = hash(key);
-    while ((table+index)->key != NULL && strcmp((table+index)->key, key)){
+    while ((table+index)->key != NULL && !compare((table+index)->key, key)){
         index++;
     }
-    if (strcmp((table+index)->key, key) == 0) {
+    if (compare((table+index)->key, key)) {
         return (table+index)->value;
     }
     return "0";
@@ -29,7 +29,7 @@ char* getVariable(Variable* table, char* key){
 // set the variable to the table
 void setVariable(Variable* table, char* key, char* value){
     int index = hash(key);
-    while ((table+index)->key != NULL && strcmp((table+index)->key, key)){
+    while ((table+index)->key != NULL && !compare((table+index)->key, key)){
         index++;
     }
     if ((table+index)->key == NULL) {
@@ -64,7 +64,7 @@ int isOperator(char str) {
 
 // strip the left side of the string
 char* leftStripper(char* str) {
-    while (isspace(*str)) {
+    while (isspace(*str) || *str == '\n') {
         str++;
     }
     return str;
@@ -72,10 +72,9 @@ char* leftStripper(char* str) {
 
 // strip the right side of the string
 char* rightStripper(char* str) {
-    char* end = strrchr(str, ' ');
-    while (end && *(end+1) == '\0') {
-        *end = '\0';
-        end = strrchr(str, ' ');
+    char* end = str + strlen(str) - 1;
+    while (end > str && (*end == ' ' || *end == '\n')) {
+        *end-- = '\0';
     }
     return str;
 }
@@ -184,7 +183,7 @@ int performOp(int a, int b, char c) {
     else if (c == '$') {
         return a<<b;
     }
-     else if (c == '@') {
+    else if (c == '@') {
         return (a>>b)|(a<<(64-b));
     }
     else if (c == '#') {
@@ -193,3 +192,19 @@ int performOp(int a, int b, char c) {
 
     return 0;
 }
+
+// compares two strings
+int compare(char* str1, char* str2){
+    int i = 0;
+    while (str1[i] != '\0' && str2[i] != '\0'){
+        if (str1[i] != str2[i]){
+            return 0;
+        }
+        i++;
+    }
+    if (str1[i] == '\0' && str2[i] == '\0'){
+        return 1;
+    }
+    return 0;
+}
+

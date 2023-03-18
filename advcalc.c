@@ -95,7 +95,9 @@ int main(){
                     *res++='-';
                 }
                 *res = '\0';
-                setVariable(variables, left, res1);
+                char* key = (char *) malloc(sizeof(char)*strlen(left));
+                strcpy(key, left);
+                setVariable(variables, key, res1);
 
             } else{
                 printf("Error!");
@@ -107,9 +109,9 @@ int main(){
             expr = infixToPostfix(expr);
             int result = evaluateExpression(expr);
             if (expr){
-            printf("%d ", result);
+                printf("%d ", result);
             }else{
-            printf("Error!");
+                printf("Error!");
             }
         }
         printf("\n");
@@ -133,7 +135,7 @@ char* infixToPostfix(char* str){
             // add the digit to the memory
             push(memory, *str);
             char next = *(str+1);
-            if (isspace(next) || next == ')' || isOperator(next) || next == ','){
+            if (isspace(next) || next == ')' || isOperator(next) || next == ',' || next == '\0'){
                 // add the memory to the result and clear the memory
                 // it is reversed but it is a feature not a bug :)
                 while (getSize(memory) > 0) {
@@ -149,7 +151,7 @@ char* infixToPostfix(char* str){
         } else if (isalpha(*str)) {
             push(memory, *str);
             char next = *(str+1);
-            if (isspace(next) || next == '(' || next == ')' || isOperator(next) || next == ','){
+            if (isspace(next) || next == '(' || next == ')' || isOperator(next) || next == ',' || next == '\0'){
                 // add the memory to the result and clear the memory
                 char* temp = (char*) malloc(sizeof(char)*getSize(memory)); 
                 char* copy = temp;

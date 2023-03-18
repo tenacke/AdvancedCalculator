@@ -32,3 +32,5 @@ void setVariable(Variable* table, char* key, char* value);
 char peek(Stack* stack);
 int getPrecedence(char* str);
 char* isFunction(char* str);
+
+int compare(char* str1, char* str2);
