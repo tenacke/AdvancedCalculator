@@ -117,7 +117,7 @@ int main(){
     return 0;
 }
 
-char* infixToPostfix(char* str, Variable* variables){
+char* infixToPostfix(char* str){
     enum tokens lastToken = OPERATOR;
     Stack* operations = initializeStack();
     // memory for digits and letters
