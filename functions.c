@@ -111,6 +111,7 @@ void push(Stack* stack, char str){
 void pushInt(IntStack* stack, int x){
     (*stack).elements[(*stack).size++] = x;
 }
+
 // pop the char from the stack
 char pop(Stack* stack){
     return (*stack).elems[--(*stack).size];
@@ -156,6 +157,8 @@ int getPrecedence(char* str){
     return 0;
 }
 
+
+
 int performOp(int a, int b, char c) {
     if (c == '+') {
         return a+b;
@@ -181,11 +184,12 @@ int performOp(int a, int b, char c) {
     else if (c == '$') {
         return a<<b;
     }
-    else if (c == '@') {
+     else if (c == '@') {
         return (a>>b)|(a<<(64-b));
     }
     else if (c == '#') {
         return (a<<b)|(a>>(64-b));
     }
+
     return 0;
 }

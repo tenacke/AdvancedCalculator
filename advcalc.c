@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <ctype.h>
 #include "functions.h"
 
@@ -35,6 +36,8 @@ int main(){
     variables = (Variable*) calloc(256, sizeof(Variable));
     char str[256+1] = "";
     printf("> ");
+    variables = (Variable*) calloc(256, sizeof(Variable));
+
     while (fgets(str, sizeof(str), stdin)) {
         // check for comments
         split(str, '%');
@@ -75,16 +78,26 @@ int main(){
             right = infixToPostfix(right); //convert to postfix
             int* result = evaluateExpression(right);
             if (result) {
-                int a = *result;
-                char* res = (char*) malloc(sizeof(char)*500);
+                int a = (int)result;
+                char* res = (char*) malloc(sizeof(char)*25);
                 char* res1 = res;
+                bool isNeg = false;
+                if (a<0) {
+                    isNeg = true;
+                    a = a*-1;
+                }
+
                 while (a>0) {
                     *res++ = '0'+a%10;
                     a= a/10;
                 }
+                if (isNeg) {
+                    *res++='-';
+                }
                 *res = '\0';
                 printf("%s", left);
                 setVariable(variables, left, res1);
+
             } else{
                 printf("Error!");
             }
@@ -93,9 +106,9 @@ int main(){
             // evaluate the expression
             char* expr = strip(str);
             expr = infixToPostfix(expr);
-            int* result = evaluateExpression(expr);
+            int result = evaluateExpression(expr);
             if (result){
-            printf("%d", *result);
+            printf("%d ", result);
             }else{
             printf("Error!");
             }
@@ -278,6 +291,10 @@ int* evaluateExpression(char* str){
                 }
                 myVar+=((int)(*str)-(int)('0'))*power;
                 power*=10;
+                if (*(str+1)=='-') {
+                    myVar = myVar*-1;
+                    str++;
+                }
             }
             else if (*str == ' ' && myVar!=-1) {
                 pushInt(res, myVar);
