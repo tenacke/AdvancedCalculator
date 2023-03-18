@@ -1,4 +1,4 @@
-typedef long long int lli;
+typedef long long signed int lli;
 typedef struct {
   char elems[256];
   int size;

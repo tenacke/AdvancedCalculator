@@ -287,7 +287,9 @@ lli evaluateExpression(char* str){
 
             }
             else if (*str != ' '){
-                pushInt(res, performOp(popInt(res), popInt(res), *str));
+                lli a = popInt(res);
+                lli b = popInt(res);
+                pushInt(res, performOp(b, a, *str));
             }
             str++;
         }
