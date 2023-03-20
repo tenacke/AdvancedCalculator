@@ -4,7 +4,7 @@ typedef struct {
   int size;
 } Stack;
 typedef struct {
-  int elements[256];
+  lli elements[256];
   int size;
 } IntStack;
 typedef struct {

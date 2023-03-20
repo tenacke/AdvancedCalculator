@@ -7,6 +7,10 @@
 
 // variables
 Variable* variables;
+Stack* operations;
+Stack* memory;
+Stack* functions;
+IntStack* commas;
 enum tokens lastToken;
 
 // evaluate the expression and return NULL if it is not valid
@@ -30,6 +34,10 @@ int main(){
         if (right){ // means that line is assignment
                 char *left, temp; //left hand side
                 left = strip(str);
+                int invalid = 0;
+                if (strlen(left) == 0) {
+                    invalid = 1;
+                }
                 int len = strlen(left) -1;
                 // check if the left side is valid
                 for (int i = 0; i < len; i++) {
@@ -40,7 +48,7 @@ int main(){
                 }
 
                 char* func = isFunction(left);
-                int invalid = 0;
+                
                 for (int i = 0; i < strlen(left); i++) {
                     if (!isalpha(*(left+i))) {
                         invalid = 1;
@@ -59,6 +67,11 @@ int main(){
             right = strip(right); //right hand side
             right = infixToPostfix(right); //convert to postfix
             lli result = evaluateExpression(right);
+            if (lastToken == NONE) {
+                printf("Error!\n> ");
+                continue;
+            }
+
             if (right) {
                 lli a = result;
                 char* res = (char*) malloc(sizeof(char)*25);
@@ -110,17 +123,23 @@ int main(){
 }
 
 char* infixToPostfix(char* str){
+    // free(operations);
+    // free(memory);
+    // free(functions);
+    // free(commas);
     lastToken = NONE;
-    Stack* operations = initializeStack();
-    // memory for digits and letters
-    Stack* memory = initializeStack(); 
-    Stack* functions = initializeStack(); 
-
+    operations = initializeStack();
+    memory = initializeStack(); 
+    functions = initializeStack(); 
+    commas = initializeIntStack();
     // result string in postfix form
     char* result = (char*) malloc(sizeof(char)*512);
     char* copy = result;
     for (; (*str) != '\0'; str++) {
         if (isdigit(*str)) { 
+            if (lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS || lastToken == FUNCTION){
+                return NULL;
+            }
             // add the digit to the memory
             push(memory, *str);
             char next = *(str+1);
@@ -132,11 +151,15 @@ char* infixToPostfix(char* str){
                 }
                 *result++ = ' ';
                 lastToken = NUMBER;
-            } else if (!isdigit(next) || lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS || lastToken == FUNCTION){ 
+            } else if (!isdigit(next)){ 
                 // if the next character is not digit or space or ')' or operator or digit that means it is error
                 return NULL;
             }
+            
         } else if (isalpha(*str)) {
+            if (lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS || lastToken == FUNCTION){
+                return NULL;
+            }
             push(memory, *str);
             char next = *(str+1);
             if (isspace(next) || next == '(' || next == ')' || isOperator(next) || next == ',' || next == '\0'){
@@ -164,13 +187,20 @@ char* infixToPostfix(char* str){
                     lastToken = VARIABLE;
                 }
 
-            } else if (!isalpha(next) || lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS || lastToken == FUNCTION){ 
+            } else if (!isalpha(next)){ 
                 // if the next character is not letter or space or parenthesis or operator or digit that means it is error
                 return NULL;
             }
+            
+
         } else if (isspace(*str)) {
             // ignore the spaces
         } else if (*str == '(') {
+            if (lastToken == FUNCTION){
+                pushInt(commas, 1);
+            }else{
+                pushInt(commas, 0);
+            }
             // push the '(' to the stack
             push(operations, *str);
             char* next = str+1;
@@ -185,6 +215,7 @@ char* infixToPostfix(char* str){
             if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == NONE || lastToken == FUNCTION){
                 return NULL;
             }
+            popInt(commas);
             // pop the stack until '('
             // add the popped operators to the result
             char operation = ')';
@@ -220,9 +251,11 @@ char* infixToPostfix(char* str){
             lastToken = OPERATOR;
             
         } else if (*str == ','){
-            if (getSize(functions)==0 || lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == NONE || lastToken == FUNCTION){
+            lli commaCount = popInt(commas);
+            if (commaCount <= 0 || getSize(functions)==0 || lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == NONE || lastToken == FUNCTION){
                 return NULL;
             }
+            pushInt(commas, commaCount-1);
             // use the comma as an operator for a function
             char op = pop(functions);
 
