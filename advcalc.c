@@ -214,7 +214,10 @@ char* infixToPostfix(char* str){
             if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == NONE || lastToken == FUNCTION){
                 return NULL;
             }
-            popInt(commas);
+            int wasComma = popInt(commas);
+            if (wasComma>0) {
+                return NULL;
+            }
             // pop the stack until '('
             // add the popped operators to the result
             char operation = ')';
