@@ -7,10 +7,6 @@
 
 // variables
 Variable* variables;
-Stack* operations;
-Stack* memory;
-Stack* functions;
-IntStack* commas;
 enum tokens lastToken;
 
 // evaluate the expression and return NULL if it is not valid
@@ -31,15 +27,18 @@ int main(){
         // check '=' for the line is assignment or not
         char* right = split(str, '=');
         
-        if (right){ // means that line is assignment
-                char *left, temp; //left hand side
+        // means that line is assignment
+        if (right){ 
+                //left hand side
+                char *left, temp; 
                 left = strip(str);
                 int invalid = 0;
                 if (strlen(left) == 0) {
                     invalid = 1;
                 }
                 int len = strlen(left) -1;
-                // check if the left side is valid
+                
+                // reverse the string
                 for (int i = 0; i < len; i++) {
                     temp = *(left+i);
                     *(left+i) = *(left+len);
@@ -47,8 +46,8 @@ int main(){
                     len--;
                 }
 
+                // check validity
                 char* func = isFunction(left);
-                
                 for (int i = 0; i < strlen(left); i++) {
                     if (!isalpha(*(left+i))) {
                         invalid = 1;
@@ -67,11 +66,14 @@ int main(){
             right = strip(right); //right hand side
             right = infixToPostfix(right); //convert to postfix
             lli result = evaluateExpression(right);
+            
+            // check if the expression is not empty
             if (lastToken == NONE) {
                 printf("Error!\n> ");
                 continue;
             }
 
+            // check if the expression is valid
             if (right) {
                 lli a = result;
                 char* res = (char*) malloc(sizeof(char)*25);
@@ -103,6 +105,7 @@ int main(){
             char* expr = strip(str);
             expr = infixToPostfix(expr);
             
+            // check validity
             if (expr){
                 if (lastToken == NONE) {
                     printf("> ");
@@ -123,15 +126,11 @@ int main(){
 }
 
 char* infixToPostfix(char* str){
-    // free(operations);
-    // free(memory);
-    // free(functions);
-    // free(commas);
     lastToken = NONE;
-    operations = initializeStack();
-    memory = initializeStack(); 
-    functions = initializeStack(); 
-    commas = initializeIntStack();
+    Stack* operations = initializeStack();
+    Stack* memory = initializeStack(); 
+    Stack* functions = initializeStack(); 
+    IntStack* commas = initializeIntStack();
     // result string in postfix form
     char* result = (char*) malloc(sizeof(char)*512);
     char* copy = result;
