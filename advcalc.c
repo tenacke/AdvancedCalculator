@@ -314,12 +314,13 @@ char* infixToPostfix(char* str){
 lli evaluateExpression(char* str){
     if (str) {
         lli power = 1; //variables are held backwards, so start from 1st power
-        lli myVar = -1;
+        lli myVar = 0;
+        int uninitilized = 1;
         IntStack* res = initializeIntStack();
-
         while (*str!='\0') {
             if (isdigit(*str)) {
-                if (myVar == -1) {
+                if (uninitilized) {
+                    uninitilized = 0;
                     myVar = 0;
                 }
                 myVar+=((lli)(*str)-(lli)('0'))*power; //char to int times current power
@@ -329,9 +330,10 @@ lli evaluateExpression(char* str){
                     str++;
                 }
             }
-            else if (*str == ' ' && myVar!=-1) { //push int to result when see a space
+            else if (*str == ' ' && !uninitilized) { //push int to result when see a space                
                 pushInt(res, myVar);
-                myVar = -1;
+                myVar = 0;
+                uninitilized = 1;
                 power = 1;
             }
 
