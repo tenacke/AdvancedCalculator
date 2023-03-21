@@ -172,8 +172,10 @@ char* infixToPostfix(char* str){
                 char* func = isFunction(copy);
                 if (func) {
                     if (*func == '~'){
+                        pushInt(commas, 0);
                         push(operations, *func);
                     }else{
+                        pushInt(commas, 1);
                         push(functions, *func);
                     }
                     lastToken = FUNCTION;
@@ -195,9 +197,7 @@ char* infixToPostfix(char* str){
         } else if (isspace(*str)) {
             // ignore the spaces
         } else if (*str == '(') {
-            if (lastToken == FUNCTION){
-                pushInt(commas, 1);
-            }else{
+            if (lastToken != FUNCTION){
                 pushInt(commas, 0);
             }
             // push the '(' to the stack
