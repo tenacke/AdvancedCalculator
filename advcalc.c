@@ -296,8 +296,8 @@ char* infixToPostfix(char* str){
 
 lli evaluateExpression(char* str){
     if (str) {
-        int power = 1;
-        int myVar = -1;
+        lli power = 1;
+        lli myVar = -1;
         IntStack* res = initializeIntStack();
 
         while (*str!='\0') {

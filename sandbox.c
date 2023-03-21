@@ -5,7 +5,8 @@
 #include "functions.h"
 
 int main() {
-    printf("%d", 67 << 2);
-
+    
+    lli anne = 9223372036854775807;
+    printf("%lld", anne);
     return 0;
 }
