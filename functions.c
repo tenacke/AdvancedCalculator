@@ -95,7 +95,7 @@ char* split(char* str, char find) {
     }
 }
 
-// initialize the stack
+// initialize the stacks
 Stack* initializeStack(){
     return (Stack*) malloc(sizeof(Stack));
 }
@@ -103,7 +103,7 @@ IntStack* initializeIntStack(){
     return (IntStack*) malloc(sizeof(IntStack));
 }
 
-// push the char to the stack
+// push the char or int to the stacks
 void push(Stack* stack, char str){
     (*stack).elems[(*stack).size++] = str;
 }
@@ -111,7 +111,7 @@ void pushInt(IntStack* stack, lli x){
     (*stack).elements[(*stack).size++] = x;
 }
 
-// pop the char from the stack
+// pop the char or int from the stacks
 char pop(Stack* stack){
     return (*stack).elems[--(*stack).size];
 }
@@ -124,7 +124,7 @@ char peek(Stack* stack){
     return (*stack).elems[(*stack).size-1];
 }
 
-// get the size of the stack
+// get the sizes of the stacks
 int getSize(Stack* stack){
     return (*stack).size;
 }
@@ -132,6 +132,7 @@ int getIntSize(IntStack* stack){
     return (*stack).size;
 }
 
+//return our assigned precedence values
 int getPrecedence(char* str){
     switch (*str){
         case '^':
@@ -156,8 +157,7 @@ int getPrecedence(char* str){
     return 0;
 }
 
-
-
+//take 2 integers and an operator and perform the appropriate operation
 lli performOp(lli a, lli b, char c) {
     if (c == '+') {
         return a+b;
