@@ -17,7 +17,7 @@ char* infixToPostfix(char* str);
 
 //main entrance of the code
 int main(){
-    char str[256+1] = "";
+    char str[256+2] = "";
     printf("> ");
     variables = (Variable*) calloc(256, sizeof(Variable)); //variable hashmap initialization
 
@@ -145,7 +145,7 @@ char* infixToPostfix(char* str){
     //characters are grouped, syntax errors are detected due to invalid consecutive token types
     for (; (*str) != '\0'; str++) {
         if (isdigit(*str)) { 
-            if (lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS || lastToken == FUNCTION){
+            if (lastToken == VARIABLE || lastToken == NUMBER || lastToken == FUNCTION || lastToken == RIGHT_PARENTHESIS){
                 return NULL;
             }
             // add the digit to the memory
@@ -165,12 +165,12 @@ char* infixToPostfix(char* str){
             }
             
         } else if (isalpha(*str)) {
-            if (lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS || lastToken == FUNCTION){
+            if (lastToken == RIGHT_PARENTHESIS || lastToken == NUMBER || lastToken == VARIABLE || lastToken == FUNCTION){
                 return NULL;
             }
             push(memory, *str); //add char to memory
             char next = *(str+1);
-            if (isspace(next) || next == '(' || next == ')' || isOperator(next) || next == ',' || next == '\0'){
+            if (next == ')' || next == '(' || isspace(next) || isOperator(next) || next == '\0' || next == ','){
                 // add the memory to the result and clear the memory
                 char* temp = (char*) malloc(sizeof(char)*getSize(memory)); 
                 char* copy = temp;
@@ -183,8 +183,8 @@ char* infixToPostfix(char* str){
                 char* func = isFunction(copy);
                 if (func) {
                     if (*func == '~'){
-                        pushInt(commas, 0);
                         push(operations, *func);
+                        pushInt(commas, 0);
                     }else{
                         pushInt(commas, 1);
                         push(functions, *func);
@@ -217,12 +217,12 @@ char* infixToPostfix(char* str){
             while (*next == ' '){
                 next++;
             }
-            if (isOperator(*next) || *next == ')' || lastToken == NUMBER || lastToken == VARIABLE || lastToken == RIGHT_PARENTHESIS) {
+            if (isOperator(*next) || *next == ')' || lastToken == RIGHT_PARENTHESIS || lastToken == NUMBER || lastToken == VARIABLE) {
                 return NULL;
             }
             lastToken = LEFT_PARENTHESIS;
         } else if (*str == ')') {
-            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == NONE || lastToken == FUNCTION){
+            if (lastToken == NONE || lastToken == OPERATOR || lastToken == LEFT_PARENTHESIS || lastToken == FUNCTION){
                 return NULL;
             }
 
@@ -247,7 +247,7 @@ char* infixToPostfix(char* str){
 
             lastToken = RIGHT_PARENTHESIS;
         } else if (isOperator(*str)) {
-            if (lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == NONE || lastToken == FUNCTION){
+            if (lastToken == NONE || lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
                 return NULL;
             }
 
@@ -268,7 +268,7 @@ char* infixToPostfix(char* str){
             
         } else if (*str == ','){
             lli commaCount = popInt(commas);
-            if (commaCount <= 0 || getSize(functions)==0 || lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == NONE || lastToken == FUNCTION){
+            if (lastToken == NONE || commaCount <= 0 || getSize(functions)==0 || lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
                 return NULL; //if invalid token or comma was not expected - error
             }
             pushInt(commas, commaCount-1); //if a comma was expected, great update
@@ -306,6 +306,10 @@ char* infixToPostfix(char* str){
     if (lastToken == OPERATOR || lastToken == LEFT_PARENTHESIS || lastToken == FUNCTION)
         return NULL; //if line ends with an invalid token - error
 
+    free(operations);
+    free(commas);
+    free(memory);
+    free(functions);
     *result = '\0';
     return copy;
 }
@@ -352,6 +356,5 @@ lli evaluateExpression(char* str){
         lli a = popInt(res); //last element in stack is the result
         return a;
         }
-
     return 0;
 }
