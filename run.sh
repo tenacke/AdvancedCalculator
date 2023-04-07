@@ -1,2 +1,2 @@
-gcc advcalc.c functions.c -o advcalc
+make
 ./advcalc
