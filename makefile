@@ -8,4 +8,4 @@ functions.o:functions.c functions.h
 	gcc -c functions.c -o functions.o
 
 clean:
-	rm -f *.o advcalc
+	rm -f *.o advcalc2ir *.ll

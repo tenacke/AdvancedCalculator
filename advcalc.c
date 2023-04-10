@@ -22,7 +22,6 @@ int main(int argv, char *args[]){
     char* outputFileName;
     strncpy(outputFileName, FILENAME, length-4);
     strcpy(outputFileName+length-4, ".ll");
-
     int lineNumber = 0;
     char str[256+2] = "";
 

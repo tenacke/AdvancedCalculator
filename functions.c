@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 #include "functions.h"
+
+int regNum = 0;
 
 // hash function
 int hash(char* str){
@@ -214,5 +217,10 @@ int compare(char* str1, char* str2){
         return 1;
     }
     return 0;
+}
+
+char* getNewRegister(){
+    char *reg;
+    return reg;
 }
 
