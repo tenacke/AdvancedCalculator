@@ -1,2 +1,2 @@
 make
-./advcalc
+./advcalc2ir file.adv

@@ -59,7 +59,7 @@ char* isFunction(char* str){
 
 // returns 1 if the string is an operator
 int isOperator(char str) {
-    return (str) == '+' || (str) == '-' || (str) == '*' || (str) == '&' || (str) == '|';
+    return (str) == '+' || (str) == '-' || (str) == '*' || (str) == '&' || (str) == '|' || (str) == '/' || (str) == '%';
 }
 
 // strip the left side of the string
@@ -150,6 +150,8 @@ int getPrecedence(char* str){
         case '-':
             return 5;
         case '*':
+        case '/':
+        case '%':
             return 6;
         case '~':
             return 7;
@@ -188,6 +190,12 @@ lli performOp(lli a, lli b, char c) {
     }
     else if (c == '#') {
         return (a<<b)|(a>>(64-b));
+    }
+    else if (c == '%') {
+        return a%b;
+    }
+    else if (c == '/'){
+        return a/b;
     }
 
     return 0;

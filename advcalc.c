@@ -16,14 +16,24 @@ lli evaluateExpression(char* str);
 char* infixToPostfix(char* str);
 
 //main entrance of the code
-int main(){
+int main(int argv, char *args[]){
+    char *FILENAME = args[argv-1];
+    size_t length = strlen(FILENAME);
+    char* outputFileName;
+    strncpy(outputFileName, FILENAME, length-4);
+    strcpy(outputFileName+length-4, ".ll");
+
+    int lineNumber = 0;
     char str[256+2] = "";
-    printf("> ");
+
     variables = (Variable*) calloc(256, sizeof(Variable)); //variable hashmap initialization
+    input = fopen(FILENAME, "r");
+    output = fopen(outputFileName, "w");
 
+    fprintf(output, "; ModuleID = 'advcalc2ir'\ndeclare i32 @printf(i8*, ...)\n@print.str = constant [4 x i8] c\"%%d\\0A\\00\"\n\ndefine i32 @main() {\n");
     //while loop runs until input is null
-    while (fgets(str, sizeof(str), stdin)) {
-
+    while (fgets(str, sizeof(str), input)) {
+        lineNumber++;
         // check for comments
         split(str, '%');
 
@@ -59,8 +69,7 @@ int main(){
                 }
 
                 if (func || invalid) {
-                    printf("Error!");
-                    printf("\n> ");
+                    printf("Error in line %d!\n", lineNumber);
                     continue;
                 }
                 
@@ -72,7 +81,7 @@ int main(){
             
             // check if the expression is not empty
             if (lastToken == NONE) {
-                printf("Error!\n> ");
+                printf("Error in line %d!\n", lineNumber);
                 continue;
             }
 
@@ -100,7 +109,7 @@ int main(){
                 setVariable(variables, key, res1);
 
             } else{
-                printf("Error!\n");
+                printf("Error in line %d!\n", lineNumber);
             }
 
         }else{ // means that line is not assignment
@@ -111,20 +120,19 @@ int main(){
             // check validity
             if (expr){
                 if (lastToken == NONE) {
-                    printf("> ");
                     continue;
                 }
                 
                 lli result = evaluateExpression(expr); //evaluate
-                printf("%lld", result);
+                fprintf(output, "\t%lld\n", result);
             }else{
-                printf("Error!");
+                printf("Error in line %d!\n", lineNumber);
             }
-            printf("\n");
         }
-        
-        printf("> ");
     }
+    fprintf(output, "\tret i32 0\n}");
+    fclose(input);
+    fclose(output);
     return 0;
 }
 

@@ -3,7 +3,8 @@
 /run.sh
 /sandbox.c
 /a.out
-/advcalc
+/advcalc2ir
 /advcalc.o
 /functions.o
 /.idea
+/file.ll

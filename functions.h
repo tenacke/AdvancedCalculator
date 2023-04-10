@@ -1,3 +1,24 @@
+// macros
+#define ALLOCA = "%s = alloca i32"
+#define STORE = "store i32 %s, i32* %s"
+#define CALL = "call i32 (i8*, ...) @printf(i8* getelementptr ([4 x i8], [4 x i8]* @print.str, i32 0, i32 0), i32 %s)"
+#define LOAD = "%s = load i32, i32* %s"
+#define XOR = "%s = xor i32 %s, %s"
+#define LSHIFT = "%s = shl i32 %s, %s"
+#define RSHIFT = "%s = lshr i32 %s, %s"
+#define NOT = "%s = xor i32 %s, -1"
+#define ADD = "%s = add i32 %s, %s"
+#define SUB = "%s = sub i32 %s, %s"
+#define MUL = "%s = mul i32 %s, %s"
+#define DIV = "%s = sdiv i32 %s, %s"
+#define AND = "%s = and i32 %s, %s"
+#define OR = "%s = or i32 %s, %s"
+#define MOD = "%s = srem i32 %s, %s"
+
+// files
+FILE* input;
+FILE* output;
+
 //some new type definitions
 typedef long long signed int lli;
 typedef struct {
