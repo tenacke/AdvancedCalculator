@@ -121,7 +121,7 @@ int main(int argv, char *args[]){
                 if (lastToken == NONE) {
                     continue;
                 }
-                
+                // TODO should call CALL
                 lli result = evaluateExpression(expr); //evaluate
                 fprintf(output, "\t%lld\n", result);
             }else{
@@ -323,6 +323,7 @@ char* infixToPostfix(char* str){
 
 //parse - evaluate from postfix to a single long long int
 lli evaluateExpression(char* str){
+    // TODO should replace with registers
     if (str) {
         lli power = 1; //variables are held backwards, so start from 1st power
         lli myVar = 0;

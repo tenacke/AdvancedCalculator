@@ -24,13 +24,16 @@ char* getVariable(Variable* table, char* key){
         index++;
     }
     if ((table+index)->key == NULL) {
+        // TODO should be null
         return "0";
     }
+    // TODO should call LOAD and return a register
     return (table+index)->value;
 }
 
 // set the variable to the table
 void setVariable(Variable* table, char* key, char* value){
+    // TODO should check if it exists, if not call ALLOCA, in both cases call STORE
     int index = hash(key);
     while ((table+index)->key != NULL && !compare((table+index)->key, key)){
         index++;
