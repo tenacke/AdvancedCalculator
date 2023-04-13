@@ -5,7 +5,6 @@
 #include <math.h>
 #include "functions.h"
 
-int regNum = 0;
 
 // hash function
 int hash(char* str){
@@ -223,7 +222,9 @@ int compare(char* str1, char* str2){
 }
 
 char* getNewRegister(){
+    static int regNum;
     char *reg;
+    asprintf(&reg, "%%%d", ++regNum);
     return reg;
 }
 
