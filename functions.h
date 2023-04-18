@@ -1,34 +1,31 @@
 // macros
-#define ALLOCA = "%s = alloca i32"
-#define STORE = "store i32 %s, i32* %s"
-#define CALL = "call i32 (i8*, ...) @printf(i8* getelementptr ([4 x i8], [4 x i8]* @print.str, i32 0, i32 0), i32 %s)"
-#define LOAD = "%s = load i32, i32* %s"
-#define XOR = "%s = xor i32 %s, %s"
-#define LSHIFT = "%s = shl i32 %s, %s"
-#define RSHIFT = "%s = lshr i32 %s, %s"
-#define NOT = "%s = xor i32 %s, -1"
-#define ADD = "%s = add i32 %s, %s"
-#define SUB = "%s = sub i32 %s, %s"
-#define MUL = "%s = mul i32 %s, %s"
-#define DIV = "%s = sdiv i32 %s, %s"
-#define AND = "%s = and i32 %s, %s"
-#define OR = "%s = or i32 %s, %s"
-#define MOD = "%s = srem i32 %s, %s"
+#define ALLOCA  "\t%s = alloca i32\n"
+#define STORE  "\tstore i32 %s, i32* %s\n"
+#define CALL  "\tcall i32 (i8*, ...) @printf(i8* getelementptr ([4 x i8], [4 x i8]* @print.str, i32 0, i32 0), i32 %s)\n"
+#define LOAD  "\t%s = load i32, i32* %s\n"
+#define XOR  "\t%s = xor i32 %s, %s\n"
+#define LSHIFT  "\t%s = shl i32 %s, %s\n"
+#define RSHIFT  "\t%s = lshr i32 %s, %s\n"
+#define ADD  "\t%s = add i32 %s, %s\n"
+#define SUB  "\t%s = sub i32 %s, %s\n"
+#define MUL  "\t%s = mul i32 %s, %s\n"
+#define DIV  "\t%s = sdiv i32 %s, %s\n"
+#define AND  "\t%s = and i32 %s, %s\n"
+#define OR  "\t%s = or i32 %s, %s\n"
+#define MOD  "\t%s = srem i32 %s, %s\n"
 
 
 //some new type definitions
-typedef long long signed int lli;
 typedef struct {
   char elems[256];
   int size;
 } Stack;
 typedef struct {
-  lli elements[256];
-  int size;
-} IntStack;
+    char *elems[256];
+    int size;
+} PStack;
 typedef struct {
   char* key;
-  char* value;
 } Variable;
 
 //token types
@@ -52,20 +49,21 @@ int compare(char* str1, char* str2);
 
 //stack definitions and functions
 Stack* initializeStack();
-IntStack* initializeIntStack();
+PStack* initializePStack();
 void push(Stack* stack, char str);
-void pushInt(IntStack* stack, lli x);
 char pop(Stack* stack);
-lli popInt(IntStack* stack);
 int getSize(Stack* stack);
-int getIntSize(IntStack* stack);
+char peek(Stack* stack);
+void pushP(PStack* stack, char* str);
+char* popP(PStack* stack);
+int getSizeP(PStack* stack);
+char* peekP(PStack* stack);
 
 //functions connected to parsing and variable handling
-lli performOp(lli a, lli b, char c);
+char* performOp(char* a, char* b, char c);
 int hash(char* str);
-char* getVariable(Variable* table, char* key);
+int getVariable(Variable* table, char* key);
 void setVariable(Variable* table, char* key, char* value);
-char peek(Stack* stack);
 int getPrecedence(char* str);
 char* isFunction(char* str);
 char* getNewRegister();

@@ -13,7 +13,7 @@ FILE* input;
 FILE* output;
 
 // evaluate the expression and return NULL if it is not valid
-lli evaluateExpression(char* str);
+char* evaluateExpression(char* str);
 
 // convert infix expression to postfix expression
 char* infixToPostfix(char* str);
@@ -22,9 +22,9 @@ char* infixToPostfix(char* str);
 int main(int argv, char *args[]){
     char *FILENAME = args[argv-1];
     size_t length = strlen(FILENAME);
-    char* outputFileName;
-    strncpy(outputFileName, FILENAME, length-4);
-    strcpy(outputFileName+length-4, ".ll");
+    char* outputFileName = "file.ll";
+//    strncpy(outputFileName, FILENAME, length-4);
+//    strcpy(outputFileName+length-4, ".ll");
     int lineNumber = 0;
     char str[256+2] = "";
 
@@ -74,12 +74,10 @@ int main(int argv, char *args[]){
                     printf("Error in line %d!\n", lineNumber);
                     continue;
                 }
-                
-
             //evaluate the expression
             right = strip(right); //right hand side
             right = infixToPostfix(right); //convert to postfix
-            lli result = evaluateExpression(right); //evaluate
+            char* result = evaluateExpression(right); //evaluate
             
             // check if the expression is not empty
             if (lastToken == NONE) {
@@ -89,44 +87,32 @@ int main(int argv, char *args[]){
 
             // check if the expression is valid
             if (right) {
-                lli a = result;
-                char* res = (char*) malloc(sizeof(char)*25);
-                char* res1 = res;
-                bool isNeg = false;
-                if (a<0) {
-                    isNeg = true;
-                    a = a*-1;
+                char* key = (char *) malloc(sizeof(char)*strlen(left)+1);
+                char* copy = key;
+                *key++ = '%';
+                int length = strlen(left);
+                for (int i = length-1; i >= 0 ; i--) {
+                    *key++ = *(left+i);
                 }
-
-                while (a>0) {
-                    *res++ = '0'+a%10;
-                    a= a/10;
-                }
-                if (isNeg) {
-                    *res++='-';
-                }
-                *res = '\0';
-                char* key = (char *) malloc(sizeof(char)*strlen(left));
-                strcpy(key, left);
-                setVariable(variables, key, res1);
-
+                setVariable(variables, copy, result);
+//                printf("%s\n", result);
             } else{
                 printf("Error in line %d!\n", lineNumber);
             }
-
+            free(result);
         }else{ // means that line is not assignment
             // evaluate the expression
             char* expr = strip(str);
             expr = infixToPostfix(expr);//convert to postfix
-            
             // check validity
             if (expr){
                 if (lastToken == NONE) {
                     continue;
                 }
-                // TODO should call CALL
-                lli result = evaluateExpression(expr); //evaluate
-                fprintf(output, "\t%lld\n", result);
+                char* result = evaluateExpression(expr); //evaluate
+                fprintf(output, CALL, result);
+//                printf("%s\n", result);
+                free(result);
             }else{
                 printf("Error in line %d!\n", lineNumber);
             }
@@ -146,7 +132,7 @@ char* infixToPostfix(char* str){
     Stack* operations = initializeStack();
     Stack* memory = initializeStack(); 
     Stack* functions = initializeStack(); 
-    IntStack* commas = initializeIntStack();
+    Stack* commas = initializeStack();
 
     // result string in postfix form
     char* result = (char*) malloc(sizeof(char)*512);
@@ -194,17 +180,20 @@ char* infixToPostfix(char* str){
                 if (func) {
                     if (*func == '~'){
                         push(operations, *func);
-                        pushInt(commas, 0);
+                        push(commas, 0);
                     }else{
-                        pushInt(commas, 1);
+                        push(commas, 1);
                         push(functions, *func);
                     }
                     lastToken = FUNCTION;
                 } else {
-                    char* var = getVariable(variables, copy);
-                    while (*var != '\0') {
-                        *result++ = *var++;
+                    if (!getVariable(variables, copy)){
+                        return NULL;
                     }
+                    while (*copy != '\0') {
+                        *result++ = *copy++;
+                    }
+                    *result++ = '%';
                     *result++ = ' ';
                     lastToken = VARIABLE;
                 }
@@ -219,7 +208,7 @@ char* infixToPostfix(char* str){
             // ignore the spaces
         } else if (*str == '(') {
             if (lastToken != FUNCTION){
-                pushInt(commas, 0);
+                push(commas, 0);
             }
             // push the '(' to the stack
             push(operations, *str);
@@ -236,7 +225,7 @@ char* infixToPostfix(char* str){
                 return NULL;
             }
 
-            int wasComma = popInt(commas);
+            int wasComma = (int) pop(commas);
             if (wasComma>0) { //if a comma was expected, but the paranthesis was closed - error
                 return NULL;
             }
@@ -277,11 +266,11 @@ char* infixToPostfix(char* str){
             lastToken = OPERATOR;
             
         } else if (*str == ','){
-            lli commaCount = popInt(commas);
+            int commaCount = pop(commas);
             if (lastToken == NONE || commaCount <= 0 || getSize(functions)==0 || lastToken == LEFT_PARENTHESIS || lastToken == OPERATOR || lastToken == FUNCTION){
                 return NULL; //if invalid token or comma was not expected - error
             }
-            pushInt(commas, commaCount-1); //if a comma was expected, great update
+            push(commas, 0); //if a comma was expected, great update
 
 
             // use the comma as an operator for a function
@@ -325,47 +314,87 @@ char* infixToPostfix(char* str){
 }
 
 //parse - evaluate from postfix to a single long long int
-lli evaluateExpression(char* str){
-    // TODO should replace with registers
+
+char* evaluateExpression(char* str){
     if (str) {
-        lli power = 1; //variables are held backwards, so start from 1st power
-        lli myVar = 0;
-        int uninitilized = 1;
-        IntStack* res = initializeIntStack();
+//        printf("%s\n", str);
+        Stack* temp = initializeStack();
+        PStack* res = initializePStack();
         while (*str!='\0') {
-            if (isdigit(*str)) {
-                if (uninitilized) {
-                    uninitilized = 0;
-                    myVar = 0;
-                }
-                myVar+=((lli)(*str)-(lli)('0'))*power; //char to int times current power
-                power*=10;
-                if (*(str+1)=='-') { //handle negative numbers in memory
-                    myVar = myVar*-1;
-                    str++;
-                }
-            }
-            else if (*str == ' ' && !uninitilized) { //push int to result when see a space                
-                pushInt(res, myVar);
-                myVar = 0;
-                uninitilized = 1;
-                power = 1;
-            }
+            if (isdigit(*str) || isalpha(*str)) {
+                push(temp, *str);
 
-            //handle all operations & functions
-            else if (*str == '~'){ 
-                pushInt(res, ~popInt(res));
+            }
+            else if (*str == '%' && getSize(temp) > 0){
+                char* elem = (char *) malloc(sizeof(char) * (getSize(temp)+2));
+                char* copy = elem;
+                *copy++ = '%';
+                while (getSize(temp) > 0){
+                    *copy++ = pop(temp);
+                }
+                *copy++ = '\0';
+                char* reg = getNewRegister();
+                fprintf(output, LOAD, reg, elem);
+                free(elem);
+                pushP(res, reg);
+            }
+            else if (*str == ' ' && getSize(temp) > 0) { //push int to result when see a space
+                char* elem = (char *) malloc(sizeof(char) * (getSize(temp)+1));
+                char* copy = elem;
+                while (getSize(temp) > 0){
+                    *copy++ = pop(temp);
+                }
+                *copy++ = '\0';
 
+                pushP(res, elem);
+                printf("%s\n", peekP(res));
+            }
+                //handle all operations & functions
+            else if (*str == '~'){
+                char* a = popP(res);
+                pushP(res, performOp(a, "-1", '^'));
+//                free(a);
+            }
+            else if (*str == '@'){
+                char* b = popP(res);
+                char* a = popP(res);
+                char* c = performOp("32", b, '-');
+                char* d = performOp(a, b, '!');
+                char* e = performOp(a, c, '$');
+                pushP(res, performOp(d, e, '|'));
+//                free(a);
+//                free(b);
+//                free(c);
+//                free(d);
+//                free(e);
+            }
+            else if (*str == '#'){
+                char* b = popP(res);
+                char* a = popP(res);
+                char* c = performOp("32", b, '-');
+                char* d = performOp(a, b, '$');
+                char* e = performOp(a, c, '!');
+                pushP(res, performOp(d, e, '|'));
+//                free(a);
+//                free(b);
+//                free(c);
+//                free(d);
+//                free(e);
             }
             else if (*str != ' '){
-                lli a = popInt(res);
-                lli b = popInt(res);
-                pushInt(res, performOp(b, a, *str));
+                char* b = popP(res);
+                char* a = popP(res);
+                pushP(res, performOp(a, b, *str));
+//                free(a);
+//                free(b);
             }
             str++;
         }
-        lli a = popInt(res); //last element in stack is the result
+        char* a = (char *) malloc(sizeof peekP(res));
+        strcpy(a, popP(res)); //last element in stack is the result
+//        free(temp);
+//        free(res);
         return a;
-        }
-    return 0;
+    }
+    return NULL;
 }

@@ -5,29 +5,36 @@
 #include <math.h>
 #include "functions.h"
 
-
+extern FILE* output;
 // hash function
 int hash(char* str){
     int hash = 0;
     for (int i = 0; i < strlen(str); i++){
-        hash += str[i];
+        if (str[i] != '%')
+            hash += str[i];
     }
     return hash % 256;
 }
 
 // check if the variable is defined and return its value
 // if not return NULL
-char* getVariable(Variable* table, char* key){
-    int index = hash(key);
-    while ((table+index)->key != NULL && !compare((table+index)->key, key)){
+int getVariable(Variable* table, char* key){
+    char* ters = (char *) malloc(sizeof(key)+1);
+    char* temp = ters;
+    *temp++ = '%';
+    for (int i = strlen(key)-1; i >= 0 ; i--) {
+        *temp++ = *(key+i);
+    }
+    int index = hash(ters);
+    while ((table+index)->key != NULL && !compare((table+index)->key, ters)){
         index++;
     }
+    free(ters);
     if ((table+index)->key == NULL) {
-        // TODO should be null
-        return "0";
+        return 0;
     }
-    // TODO should call LOAD and return a register
-    return (table+index)->value;
+    return 1;
+//    return (table+index)->value;
 }
 
 // set the variable to the table
@@ -38,9 +45,10 @@ void setVariable(Variable* table, char* key, char* value){
         index++;
     }
     if ((table+index)->key == NULL) {
+        fprintf(output, ALLOCA, key);
         (table+index)->key = key;
     }
-    (table+index)->value = value;
+    fprintf(output, STORE, value, key);
 }
 
 // returns the function symbol if the string is a function
@@ -104,24 +112,14 @@ char* split(char* str, char find) {
 Stack* initializeStack(){
     return (Stack*) malloc(sizeof(Stack));
 }
-IntStack* initializeIntStack(){
-    return (IntStack*) malloc(sizeof(IntStack));
-}
-
 // push the char or int to the stacks
 void push(Stack* stack, char str){
     (*stack).elems[(*stack).size++] = str;
-}
-void pushInt(IntStack* stack, lli x){
-    (*stack).elements[(*stack).size++] = x;
 }
 
 // pop the char or int from the stacks
 char pop(Stack* stack){
     return (*stack).elems[--(*stack).size];
-}
-lli popInt(IntStack* stack){
-    return (*stack).elements[--(*stack).size];
 }
 
 // peek the char at the top of the stack
@@ -133,7 +131,27 @@ char peek(Stack* stack){
 int getSize(Stack* stack){
     return (*stack).size;
 }
-int getIntSize(IntStack* stack){
+
+PStack* initializePStack(){
+    return (PStack*) malloc(sizeof(PStack));
+}
+// push the char or int to the stacks
+void pushP(PStack* stack, char* str){
+    (*stack).elems[(*stack).size++] = str;
+}
+
+// pop the char or int from the stacks
+char* popP(PStack* stack){
+    return (*stack).elems[--(*stack).size];
+}
+
+// peek the char at the top of the stack
+char* peekP(PStack* stack){
+    return (*stack).elems[(*stack).size-1];
+}
+
+// get the sizes of the stacks
+int getSizeP(PStack* stack){
     return (*stack).size;
 }
 
@@ -165,45 +183,39 @@ int getPrecedence(char* str){
 }
 
 //take 2 integers and an operator and perform the appropriate operation
-lli performOp(lli a, lli b, char c) {
+char* performOp(char* a, char* b, char c) {
+    char* ret = getNewRegister();
     if (c == '+') {
-        return a+b;
+        fprintf(output, ADD, ret, a, b);
     }
     else if (c == '-') {
-        return a-b;
+        fprintf(output, SUB, ret, a, b);
     }
     else if (c == '*') {
-        return a*b;
+        fprintf(output, MUL, ret, a, b);
     }
     else if (c == '&') {
-        return a&b;
+        fprintf(output, AND, ret, a, b);
     }
     else if (c == '|') {
-        return a|b;
+        fprintf(output, OR, ret, a, b);
     }
     else if (c == '^') {
-        return a^b;
+        fprintf(output, XOR, ret, a, b);
     }
     else if (c == '!') {
-        return a>>b;
+        fprintf(output, RSHIFT, ret, a, b);
     }
     else if (c == '$') {
-        return a<<b;
-    }
-    else if (c == '@') {
-        return (a>>b)|(a<<(64-b));
-    }
-    else if (c == '#') {
-        return (a<<b)|(a>>(64-b));
+        fprintf(output, LSHIFT, ret, a, b);
     }
     else if (c == '%') {
-        return a%b;
+        fprintf(output, MOD, ret, a, b);
     }
     else if (c == '/'){
-        return a/b;
+        fprintf(output, DIV, ret, a, b);
     }
-
-    return 0;
+    return ret;
 }
 
 // compares two strings
@@ -224,7 +236,7 @@ int compare(char* str1, char* str2){
 char* getNewRegister(){
     static int regNum;
     char *reg;
-    asprintf(&reg, "%%%d", ++regNum);
+    asprintf(&reg, "%%ekt%d", ++regNum);
     return reg;
 }
 
