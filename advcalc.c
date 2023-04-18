@@ -170,6 +170,7 @@ char* infixToPostfix(char* str){
                 // add the memory to the result and clear the memory
                 char* temp = (char*) malloc(sizeof(char)*getSize(memory)); 
                 char* copy = temp;
+                char* verycopy = temp;
                 while (getSize(memory) > 0) {
                     *temp++ = pop(memory);
                 }
@@ -197,6 +198,7 @@ char* infixToPostfix(char* str){
                     *result++ = ' ';
                     lastToken = VARIABLE;
                 }
+                free(verycopy);
 
             } else if (!isalpha(next)){ 
                 // if the next character is not letter or space or parenthesis or operator or digit that means it is error
