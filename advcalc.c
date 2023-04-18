@@ -33,14 +33,12 @@ int main(int argv, char *args[]){
     output = fopen(outputFileName, "w");
 
     variables = (Variable*) calloc(256, sizeof(Variable)); //variable hashmap initialization
-    
 
     fprintf(output, "; ModuleID = 'advcalc2ir'\ndeclare i32 @printf(i8*, ...)\n@print.str = constant [4 x i8] c\"%%d\\0A\\00\"\n\ndefine i32 @main() {\n");
+    
     //while loop runs until input is null
     while (fgets(str, sizeof(str), input)) {
         lineNumber++;
-        // check for comments
-//        split(str, '%');
 
         // check '=' if the line is assignment or not
         char* right = split(str, '=');
@@ -77,6 +75,7 @@ int main(int argv, char *args[]){
                     printf("Error in line %d!\n", lineNumber);
                     continue;
                 }
+
             //evaluate the expression
             right = strip(right); //right hand side
             right = infixToPostfix(right); //convert to postfix
@@ -97,7 +96,6 @@ int main(int argv, char *args[]){
                 for (int i = length-1; i >= 0 ; i--) {
                     *key++ = *(left+i);
                 }
-
                 copy = strip(copy);
                 setVariable(variables, copy, result);
             } else{
@@ -116,7 +114,6 @@ int main(int argv, char *args[]){
                 }
                 char* result = evaluateExpression(expr); //evaluate
                 fprintf(output, CALL, result);
-//                printf("%s\n", result);
                 free(result);
             }else{
                 printf("Error in line %d!\n", lineNumber);
@@ -155,7 +152,6 @@ char* infixToPostfix(char* str){
             char next = *(str+1);
             if (isspace(next) || next == ')' || isOperator(next) || next == ',' || next == '\0'){
                 // add the memory to the result and clear the memory
-                // it is reversed but it is a feature not a bug :)
                 while (getSize(memory) > 0) {
                     *result++ = pop(memory);
                 }
@@ -284,6 +280,7 @@ char* infixToPostfix(char* str){
             // use the comma as an operator for a function
             char op = pop(functions);
 
+            //operation precedence handling block
             int currPrec = getPrecedence(&op);
             if (getSize(operations)>0) {
                 char c = peek(operations);
@@ -321,11 +318,10 @@ char* infixToPostfix(char* str){
     return copy;
 }
 
-//parse - evaluate from postfix to a single long long int
+//parse - evaluate the postfix, call lli printing, return stored or printed register
 
 char* evaluateExpression(char* str){
     if (str) {
-//        printf("%s\n", str);
         Stack* temp = initializeStack();
         PStack* res = initializePStack();
         while (*str!='\0') {
@@ -333,7 +329,7 @@ char* evaluateExpression(char* str){
                 push(temp, *str);
 
             }
-            else if (*str == '%' && getSize(temp) > 0){
+            else if (*str == '%' && getSize(temp) > 0){ //load an already saved variable and push it to stack
                 char* elem = (char *) calloc((getSize(temp)+2), sizeof(char));
                 char* copy = elem;
                 *copy++ = '%';
@@ -346,7 +342,7 @@ char* evaluateExpression(char* str){
                 free(elem);
                 pushP(res, reg);
             }
-            else if (*str == ' ' && getSize(temp) > 0) { //push int to result when see a space
+            else if (*str == ' ' && getSize(temp) > 0) { //push a new pointer to result when see a space
                 char* elem = (char *) calloc((getSize(temp)+1), sizeof(char));
                 char* copy = elem;
                 while (getSize(temp) > 0){
@@ -355,7 +351,6 @@ char* evaluateExpression(char* str){
                 *copy++ = '\0';
 
                 pushP(res, elem);
-//                printf("%s\n", peekP(res));
             }
                 //handle all operations & functions
             else if (*str == '~'){
@@ -363,6 +358,7 @@ char* evaluateExpression(char* str){
                 pushP(res, performOp(a, "-1", '^'));
                 free(a);
             }
+            //next two blocks handle rotations 
             else if (*str == '@'){
                 char* b = popP(res);
                 char* a = popP(res);
@@ -389,7 +385,7 @@ char* evaluateExpression(char* str){
                 free(d);
                 free(e);
             }
-            else if (*str != ' '){
+            else if (*str != ' '){ //handle other functions/operations
                 char* b = popP(res);
                 char* a = popP(res);
                 pushP(res, performOp(a, b, *str));
@@ -399,7 +395,7 @@ char* evaluateExpression(char* str){
             str++;
         }
         char* a = (char *) malloc(sizeof peekP(res));
-        strcpy(a, popP(res)); //last element in stack is the result
+        strcpy(a, popP(res)); //last element in stack is the resulting register/number
         free(temp);
         free(res);
         return a;

@@ -39,7 +39,7 @@ enum tokens {
     NONE
 };
 
-//generally used functions
+//generally used string functions
 int isOperator(char str);
 char* leftStripper(char* str);
 char* rightStripper(char* str);
@@ -66,4 +66,6 @@ int getVariable(Variable* table, char* key);
 void setVariable(Variable* table, char* key, char* value);
 int getPrecedence(char* str);
 char* isFunction(char* str);
+
+//register assigning
 char* getNewRegister();

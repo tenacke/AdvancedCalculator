@@ -6,6 +6,7 @@
 #include "functions.h"
 
 extern FILE* output;
+
 // hash function
 int hash(char* str){
     int hash = 0;
@@ -39,7 +40,6 @@ int getVariable(Variable* table, char* key){
 
 // set the variable to the table
 void setVariable(Variable* table, char* key, char* value){
-    // TODO should check if it exists, if not call ALLOCA, in both cases call STORE
     int index = hash(key);
     while ((table+index)->key != NULL && !compare((table+index)->key, key)){
         index++;
@@ -112,8 +112,15 @@ char* split(char* str, char find) {
 Stack* initializeStack(){
     return (Stack*) malloc(sizeof(Stack));
 }
+PStack* initializePStack(){
+    return (PStack*) malloc(sizeof(PStack));
+}
+
 // push the char or int to the stacks
 void push(Stack* stack, char str){
+    (*stack).elems[(*stack).size++] = str;
+}
+void pushP(PStack* stack, char* str){
     (*stack).elems[(*stack).size++] = str;
 }
 
@@ -121,9 +128,15 @@ void push(Stack* stack, char str){
 char pop(Stack* stack){
     return (*stack).elems[--(*stack).size];
 }
+char* popP(PStack* stack){
+    return (*stack).elems[--(*stack).size];
+}
 
 // peek the char at the top of the stack
 char peek(Stack* stack){
+    return (*stack).elems[(*stack).size-1];
+}
+char* peekP(PStack* stack){
     return (*stack).elems[(*stack).size-1];
 }
 
@@ -131,26 +144,6 @@ char peek(Stack* stack){
 int getSize(Stack* stack){
     return (*stack).size;
 }
-
-PStack* initializePStack(){
-    return (PStack*) malloc(sizeof(PStack));
-}
-// push the char or int to the stacks
-void pushP(PStack* stack, char* str){
-    (*stack).elems[(*stack).size++] = str;
-}
-
-// pop the char or int from the stacks
-char* popP(PStack* stack){
-    return (*stack).elems[--(*stack).size];
-}
-
-// peek the char at the top of the stack
-char* peekP(PStack* stack){
-    return (*stack).elems[(*stack).size-1];
-}
-
-// get the sizes of the stacks
 int getSizeP(PStack* stack){
     return (*stack).size;
 }
@@ -182,7 +175,7 @@ int getPrecedence(char* str){
     return 0;
 }
 
-//take 2 integers and an operator and perform the appropriate operation
+//take 2 integers and an operator and print the appropriate operation to the file
 char* performOp(char* a, char* b, char c) {
     char* ret = getNewRegister();
     if (c == '+') {
@@ -233,6 +226,7 @@ int compare(char* str1, char* str2){
     return 0;
 }
 
+//assigns a new register name
 char* getNewRegister(){
     static int regNum;
     char *reg;
