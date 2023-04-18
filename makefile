@@ -13,5 +13,8 @@ file:file.s
 file.s:file.ll
 	llc -o file.s file.ll
 
+file.ll:all
+	./run.sh
+
 clean:
-	rm -f *.o advcalc2ir *.ll
+	rm -f *.o advcalc2ir *.ll *.s file
