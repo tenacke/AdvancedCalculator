@@ -8,6 +8,9 @@
 // variables
 Variable* variables;
 enum tokens lastToken;
+// files
+FILE* input;
+FILE* output;
 
 // evaluate the expression and return NULL if it is not valid
 lli evaluateExpression(char* str);

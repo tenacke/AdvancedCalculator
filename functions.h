@@ -15,9 +15,6 @@
 #define OR = "%s = or i32 %s, %s"
 #define MOD = "%s = srem i32 %s, %s"
 
-// files
-FILE* input;
-FILE* output;
 
 //some new type definitions
 typedef long long signed int lli;
