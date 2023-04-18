@@ -32,7 +32,7 @@ int main(int argv, char *args[]){
     input = fopen(FILENAME, "r");
     output = fopen(outputFileName, "w");
 
-    variables = (Variable*) calloc(256, sizeof(Variable)); //variable hashmap initialization
+    variables = (Variable*) calloc(256, sizeof(Variable)); //variable HashSet initialization
 
     fprintf(output, "; ModuleID = 'advcalc2ir'\ndeclare i32 @printf(i8*, ...)\n@print.str = constant [4 x i8] c\"%%d\\0A\\00\"\n\ndefine i32 @main() {\n");
     
