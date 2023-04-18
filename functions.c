@@ -19,7 +19,7 @@ int hash(char* str){
 // check if the variable is defined and return its value
 // if not return NULL
 int getVariable(Variable* table, char* key){
-    char* ters = (char *) malloc(sizeof(key)+1);
+    char* ters = (char *) calloc(sizeof(key)+1, 1);
     char* temp = ters;
     *temp++ = '%';
     for (int i = strlen(key)-1; i >= 0 ; i--) {
@@ -27,6 +27,7 @@ int getVariable(Variable* table, char* key){
     }
     int index = hash(ters);
     while ((table+index)->key != NULL && !compare((table+index)->key, ters)){
+
         index++;
     }
     free(ters);
@@ -34,7 +35,6 @@ int getVariable(Variable* table, char* key){
         return 0;
     }
     return 1;
-//    return (table+index)->value;
 }
 
 // set the variable to the table

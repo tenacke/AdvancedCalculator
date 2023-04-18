@@ -20,17 +20,20 @@ char* infixToPostfix(char* str);
 
 //main entrance of the code
 int main(int argv, char *args[]){
+
+    //file opening block
     char *FILENAME = args[argv-1];
     size_t length = strlen(FILENAME);
-    char* outputFileName = "file.ll";
-//    strncpy(outputFileName, FILENAME, length-4);
-//    strcpy(outputFileName+length-4, ".ll");
+    char* outputFileName = (char*) malloc(strlen(FILENAME)-1);
+   strncpy(outputFileName, FILENAME, length-4);
+   strcpy(outputFileName+length-4, ".ll");
     int lineNumber = 0;
     char str[256+2] = "";
-
-    variables = (Variable*) calloc(256, sizeof(Variable)); //variable hashmap initialization
     input = fopen(FILENAME, "r");
     output = fopen(outputFileName, "w");
+
+    variables = (Variable*) calloc(256, sizeof(Variable)); //variable hashmap initialization
+    
 
     fprintf(output, "; ModuleID = 'advcalc2ir'\ndeclare i32 @printf(i8*, ...)\n@print.str = constant [4 x i8] c\"%%d\\0A\\00\"\n\ndefine i32 @main() {\n");
     //while loop runs until input is null
@@ -87,19 +90,21 @@ int main(int argv, char *args[]){
 
             // check if the expression is valid
             if (right) {
-                char* key = (char *) malloc(sizeof(char)*strlen(left)+1);
+                char* key = (char *) calloc(strlen(left)+1, 1);
                 char* copy = key;
                 *key++ = '%';
                 int length = strlen(left);
                 for (int i = length-1; i >= 0 ; i--) {
                     *key++ = *(left+i);
                 }
+
+                copy = strip(copy);
                 setVariable(variables, copy, result);
-//                printf("%s\n", result);
             } else{
                 printf("Error in line %d!\n", lineNumber);
             }
             free(result);
+            free(right);
         }else{ // means that line is not assignment
             // evaluate the expression
             char* expr = strip(str);
@@ -116,6 +121,7 @@ int main(int argv, char *args[]){
             }else{
                 printf("Error in line %d!\n", lineNumber);
             }
+            free(expr);
         }
     }
     fprintf(output, "\tret i32 0\n}");
@@ -168,7 +174,7 @@ char* infixToPostfix(char* str){
             char next = *(str+1);
             if (next == ')' || next == '(' || isspace(next) || isOperator(next) || next == '\0' || next == ','){
                 // add the memory to the result and clear the memory
-                char* temp = (char*) malloc(sizeof(char)*getSize(memory)); 
+                char* temp = (char*) calloc(getSize(memory), sizeof(char)); 
                 char* copy = temp;
                 char* verycopy = temp;
                 while (getSize(memory) > 0) {
@@ -328,7 +334,7 @@ char* evaluateExpression(char* str){
 
             }
             else if (*str == '%' && getSize(temp) > 0){
-                char* elem = (char *) malloc(sizeof(char) * (getSize(temp)+2));
+                char* elem = (char *) calloc((getSize(temp)+2), sizeof(char));
                 char* copy = elem;
                 *copy++ = '%';
                 while (getSize(temp) > 0){
@@ -341,7 +347,7 @@ char* evaluateExpression(char* str){
                 pushP(res, reg);
             }
             else if (*str == ' ' && getSize(temp) > 0) { //push int to result when see a space
-                char* elem = (char *) malloc(sizeof(char) * (getSize(temp)+1));
+                char* elem = (char *) calloc((getSize(temp)+1), sizeof(char));
                 char* copy = elem;
                 while (getSize(temp) > 0){
                     *copy++ = pop(temp);
