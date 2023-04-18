@@ -1,13 +1,18 @@
-5 + 8 * 25 / (83 / xor(5, 1))
-x=3
-y=5
-zvalue=23+x*(1+y)
-zvalue
-k=x-y-zvalue
-k=x+3*y*(1*(2+5))
-k+1
-siu=11
-siuuu = 7
-siu / siuuu
-siu=siu*siuuu
-siu-siu+siu*siu/siu
+x
+x = 5
+(x)   = 2
+x
+x = ((())) 5
+xor   (  ls(1,1) , 1)
+rr(5) , 2
+rs =  2
+ls [2 ,  2]
+x = rs + 2
+x = (3 +  5 % 2)
+x
+x + 2 = y
+x == 3
+not((0+(((3 + 5 )))))
+rr  ( 1, 1)
+ls (( xor ( 78, 23 / 5) , 1))
+ls ( xor ( 78, 23 / 5) , 1)

@@ -37,7 +37,7 @@ int main(int argv, char *args[]){
     while (fgets(str, sizeof(str), input)) {
         lineNumber++;
         // check for comments
-        split(str, '%');
+//        split(str, '%');
 
         // check '=' if the line is assignment or not
         char* right = split(str, '=');
@@ -347,13 +347,13 @@ char* evaluateExpression(char* str){
                 *copy++ = '\0';
 
                 pushP(res, elem);
-                printf("%s\n", peekP(res));
+//                printf("%s\n", peekP(res));
             }
                 //handle all operations & functions
             else if (*str == '~'){
                 char* a = popP(res);
                 pushP(res, performOp(a, "-1", '^'));
-//                free(a);
+                free(a);
             }
             else if (*str == '@'){
                 char* b = popP(res);
@@ -362,11 +362,11 @@ char* evaluateExpression(char* str){
                 char* d = performOp(a, b, '!');
                 char* e = performOp(a, c, '$');
                 pushP(res, performOp(d, e, '|'));
-//                free(a);
-//                free(b);
-//                free(c);
-//                free(d);
-//                free(e);
+                free(a);
+                free(b);
+                free(c);
+                free(d);
+                free(e);
             }
             else if (*str == '#'){
                 char* b = popP(res);
@@ -375,25 +375,25 @@ char* evaluateExpression(char* str){
                 char* d = performOp(a, b, '$');
                 char* e = performOp(a, c, '!');
                 pushP(res, performOp(d, e, '|'));
-//                free(a);
-//                free(b);
-//                free(c);
-//                free(d);
-//                free(e);
+                free(a);
+                free(b);
+                free(c);
+                free(d);
+                free(e);
             }
             else if (*str != ' '){
                 char* b = popP(res);
                 char* a = popP(res);
                 pushP(res, performOp(a, b, *str));
-//                free(a);
-//                free(b);
+                free(a);
+                free(b);
             }
             str++;
         }
         char* a = (char *) malloc(sizeof peekP(res));
         strcpy(a, popP(res)); //last element in stack is the result
-//        free(temp);
-//        free(res);
+        free(temp);
+        free(res);
         return a;
     }
     return NULL;
