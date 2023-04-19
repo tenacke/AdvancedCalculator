@@ -20,13 +20,13 @@ char* infixToPostfix(char* str);
 
 //main entrance of the code
 int main(int argv, char *args[]){
-
+    int isRemove = 0;
     //file opening block
     char *FILENAME = args[argv-1];
     size_t length = strlen(FILENAME);
     char* outputFileName = (char*) malloc(strlen(FILENAME)-1);
-   strncpy(outputFileName, FILENAME, length-4);
-   strcpy(outputFileName+length-4, ".ll");
+    strncpy(outputFileName, FILENAME, length-4);
+    strcpy(outputFileName+length-4, ".ll");
     int lineNumber = 0;
     char str[256+2] = "";
     input = fopen(FILENAME, "r");
@@ -73,7 +73,8 @@ int main(int argv, char *args[]){
 
                 if (func || invalid) {
                     printf("Error in line %d!\n", lineNumber);
-                    continue;
+                    isRemove = 1;
+                    break;
                 }
 
             //evaluate the expression
@@ -84,7 +85,8 @@ int main(int argv, char *args[]){
             // check if the expression is not empty
             if (lastToken == NONE) {
                 printf("Error in line %d!\n", lineNumber);
-                continue;
+                isRemove = 1;
+                break;
             }
 
             // check if the expression is valid
@@ -100,6 +102,8 @@ int main(int argv, char *args[]){
                 setVariable(variables, copy, result);
             } else{
                 printf("Error in line %d!\n", lineNumber);
+                isRemove = 1;
+                break;
             }
             free(result);
             free(right);
@@ -117,6 +121,8 @@ int main(int argv, char *args[]){
                 free(result);
             }else{
                 printf("Error in line %d!\n", lineNumber);
+                isRemove = 1;
+                break;
             }
             free(expr);
         }
@@ -124,6 +130,8 @@ int main(int argv, char *args[]){
     fprintf(output, "\tret i32 0\n}");
     fclose(input);
     fclose(output);
+    if (isRemove)
+        remove(outputFileName);
     return 0;
 }
 
