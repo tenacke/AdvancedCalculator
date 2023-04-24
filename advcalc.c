@@ -74,7 +74,7 @@ int main(int argv, char *args[]){
                 if (func || invalid) {
                     printf("Error in line %d!\n", lineNumber);
                     isRemove = 1;
-                    break;
+                    continue;
                 }
 
             //evaluate the expression
@@ -86,7 +86,7 @@ int main(int argv, char *args[]){
             if (lastToken == NONE) {
                 printf("Error in line %d!\n", lineNumber);
                 isRemove = 1;
-                break;
+                continue;
             }
 
             // check if the expression is valid
@@ -103,7 +103,7 @@ int main(int argv, char *args[]){
             } else{
                 printf("Error in line %d!\n", lineNumber);
                 isRemove = 1;
-                break;
+                continue;
             }
             free(result);
             free(right);
@@ -122,7 +122,7 @@ int main(int argv, char *args[]){
             }else{
                 printf("Error in line %d!\n", lineNumber);
                 isRemove = 1;
-                break;
+                continue;
             }
             free(expr);
         }

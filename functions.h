@@ -5,7 +5,7 @@
 #define LOAD  "\t%s = load i32, i32* %s\n"
 #define XOR  "\t%s = xor i32 %s, %s\n"
 #define LSHIFT  "\t%s = shl i32 %s, %s\n"
-#define RSHIFT  "\t%s = lshr i32 %s, %s\n"
+#define RSHIFT  "\t%s = ashr i32 %s, %s\n"
 #define ADD  "\t%s = add i32 %s, %s\n"
 #define SUB  "\t%s = sub i32 %s, %s\n"
 #define MUL  "\t%s = mul i32 %s, %s\n"
