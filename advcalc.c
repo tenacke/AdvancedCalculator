@@ -179,7 +179,7 @@ char* infixToPostfix(char* str){
             if (next == ')' || next == '(' || isspace(next) || isOperator(next) || next == '\0' || next == ','){
                 // add the memory to the result and clear the memory
                 char* temp = (char*) calloc(getSize(memory), sizeof(char)); 
-                char* copy = temp;
+                char* copys = temp;
                 char* verycopy = temp;
                 while (getSize(memory) > 0) {
                     *temp++ = pop(memory);
@@ -187,7 +187,7 @@ char* infixToPostfix(char* str){
                 *temp = '\0';
 
                 //handle the operation and comma stacks if token represents a function/operation
-                char* func = isFunction(copy);
+                char* func = isFunction(copys);
                 if (func) {
                     if (*func == '~'){
                         push(operations, *func);
@@ -198,11 +198,11 @@ char* infixToPostfix(char* str){
                     }
                     lastToken = FUNCTION;
                 } else {
-                    if (!getVariable(variables, copy)){
+                    if (!getVariable(variables, copys)){
                         return NULL;
                     }
-                    while (*copy != '\0') {
-                        *result++ = *copy++;
+                    while (*copys != '\0') {
+                        *result++ = *copys++;
                     }
                     *result++ = '%';
                     *result++ = ' ';

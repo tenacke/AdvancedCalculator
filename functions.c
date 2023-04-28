@@ -47,8 +47,10 @@ void setVariable(Variable* table, char* key, char* value){
     if ((table+index)->key == NULL) {
         fprintf(output, ALLOCA, key);
         (table+index)->key = key;
+    } else {
+        free(key);
     }
-    fprintf(output, STORE, value, key);
+    fprintf(output, STORE, value, (table+index)->key);
 }
 
 // returns the function symbol if the string is a function

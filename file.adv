@@ -1,18 +1,6 @@
-x
-x = 5
-(x)   = 2
-x
-x = ((())) 5
-xor   (  ls(1,1) , 1)
-rr(5) , 2
-rs =  2
-ls [2 ,  2]
-x = rs + 2
-x = (3 +  5 % 2)
-x
-x + 2 = y
-x == 3
-not((0+(((3 + 5 )))))
-rr  ( 1, 1)
-ls (( xor ( 78, 23 / 5) , 1))
-ls ( xor ( 78, 23 / 5) , 1)
+Kuzurete = 99
+Yuku = 75
+Maeni = 12
+Kuzurete + Yuku | 1
+Maeni * Kuzurete | 1
+Yuku - Maeni | 1
