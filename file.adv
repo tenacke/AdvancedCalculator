@@ -1,2 +1,177 @@
-rr(0-15, 2)
-lr (0-15, 2)
+a = 1
+b = 1
+
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b 
+b = c 
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
+a = b
+b = c
+c = a + b
+c
