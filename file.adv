@@ -1,6 +1,2 @@
-Kuzurete = 99
-Yuku = 75
-Maeni = 12
-Kuzurete + Yuku | 1
-Maeni * Kuzurete | 1
-Yuku - Maeni | 1
+rr(0-15, 2)
+lr (0-15, 2)

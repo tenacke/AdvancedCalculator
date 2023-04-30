@@ -7,7 +7,11 @@
 /advcalc.o
 /functions.o
 /.idea
+/file.adv
 /file.ll
 /file.s
 /file
 /hw1_testcases
+/test.adv
+/test.ll
+/emrer.py

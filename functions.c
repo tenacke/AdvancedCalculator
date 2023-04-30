@@ -210,6 +210,9 @@ char* performOp(char* a, char* b, char c) {
     else if (c == '/'){
         fprintf(output, DIV, ret, a, b);
     }
+    else if (c == '#'){
+        fprintf(output, LRSHIFT, ret, a, b);
+    }
     return ret;
 }
 

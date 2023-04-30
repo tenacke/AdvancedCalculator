@@ -17,4 +17,4 @@ file.ll:all
 	./run.sh
 
 clean:
-	rm -f *.o advcalc2ir *.ll *.s file
+	rm -f *.o advcalc2ir *.ll *.s file test.*

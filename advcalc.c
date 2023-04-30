@@ -371,7 +371,7 @@ char* evaluateExpression(char* str){
                 char* b = popP(res);
                 char* a = popP(res);
                 char* c = performOp("32", b, '-');
-                char* d = performOp(a, b, '!');
+                char* d = performOp(a, b, '#');
                 char* e = performOp(a, c, '$');
                 pushP(res, performOp(d, e, '|'));
                 free(a);
@@ -385,7 +385,7 @@ char* evaluateExpression(char* str){
                 char* a = popP(res);
                 char* c = performOp("32", b, '-');
                 char* d = performOp(a, b, '$');
-                char* e = performOp(a, c, '!');
+                char* e = performOp(a, c, '#');
                 pushP(res, performOp(d, e, '|'));
                 free(a);
                 free(b);
