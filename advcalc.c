@@ -72,7 +72,7 @@ int main(int argv, char *args[]){
                 }
 
                 if (func || invalid) {
-                    printf("Error in line %d!\n", lineNumber);
+                    printf("Error on line %d!\n", lineNumber);
                     isRemove = 1;
                     continue;
                 }
@@ -84,7 +84,7 @@ int main(int argv, char *args[]){
             
             // check if the expression is not empty
             if (lastToken == NONE) {
-                printf("Error in line %d!\n", lineNumber);
+                printf("Error on line %d!\n", lineNumber);
                 isRemove = 1;
                 continue;
             }
@@ -101,7 +101,7 @@ int main(int argv, char *args[]){
                 copy = strip(copy);
                 setVariable(variables, copy, result);
             } else{
-                printf("Error in line %d!\n", lineNumber);
+                printf("Error on line %d!\n", lineNumber);
                 isRemove = 1;
                 continue;
             }
@@ -120,7 +120,7 @@ int main(int argv, char *args[]){
                 fprintf(output, CALL, result);
                 free(result);
             }else{
-                printf("Error in line %d!\n", lineNumber);
+                printf("Error on line %d!\n", lineNumber);
                 isRemove = 1;
                 continue;
             }
