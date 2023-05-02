@@ -233,9 +233,16 @@ int compare(char* str1, char* str2){
 
 //assigns a new register name
 char* getNewRegister(){
-    static int regNum;
-    char *reg;
-    asprintf(&reg, "%%ekt%d", ++regNum);
+    static int regNum = 0;
+    static int border = 10;
+    static int digit = 1;
+    regNum++;
+    if (regNum == border) {
+        border = border*10;
+        digit++;
+    }
+    char *reg = malloc(5 + digit);
+    sprintf(reg, "%%ekt%d", regNum);
     return reg;
 }
 
