@@ -21,12 +21,16 @@ char* infixToPostfix(char* str);
 //main entrance of the code
 int main(int argv, char *args[]){
     int isRemove = 0;
+
     //file opening block
-    char *FILENAME = args[argv-1];
-    size_t length = strlen(FILENAME);
-    char* outputFileName = (char*) malloc(strlen(FILENAME)-1);
-    strncpy(outputFileName, FILENAME, length-4);
-    strcpy(outputFileName+length-4, ".ll");
+    char *FILENAME = args[1];
+    char *outputFileName;
+    if (argv <= 2) {
+        outputFileName = "out.ll";
+    } else {
+        outputFileName = args[2];
+    }
+    
     int lineNumber = 0;
     char str[256+2] = "";
     input = fopen(FILENAME, "r");
